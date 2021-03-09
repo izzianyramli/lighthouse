@@ -26,25 +26,19 @@ class Footer extends Component {
           <nav className="pull-left">
             <ul>
               <li>
-                <a href="#pablo">Home</a>
+                <a href="/admin/dashboard">Home</a>
               </li>
               <li>
-                <a href="#pablo">Company</a>
-              </li>
-              <li>
-                <a href="#pablo">Portfolio</a>
-              </li>
-              <li>
-                <a href="#pablo">Blog</a>
+                <a href="https://www.mida.gov.my">Company</a>
               </li>
             </ul>
           </nav>
           <p className="copyright pull-right">
             &copy; {new Date().getFullYear()}{" "}
-            <a href="http://www.creative-tim.com?ref=lbr-footer">
-              Creative Tim
+            <a href="https://www.mida.gov.my/malaysias-lighthouse-project-the-beacon-of-malaysias-future-industries/">
+              Lighthouse Project
             </a>
-            , made with love for a better web
+            &nbsp; The Beacon of Malaysia’s Future Industries
           </p>
         </Grid>
       </footer>

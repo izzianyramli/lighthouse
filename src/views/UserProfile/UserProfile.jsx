@@ -92,7 +92,7 @@ class UserProfile extends Component {
                       ncols={["col-md-12"]}
                       properties={[
                         {
-                          label: "Adress",
+                          label: "Address",
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Home Adress",
@@ -136,12 +136,12 @@ class UserProfile extends Component {
                             componentClass="textarea"
                             bsClass="form-control"
                             placeholder="Here can be your description"
-                            defaultValue="Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo."
+                            defaultValue="Descriptionsss"
                           />
                         </FormGroup>
                       </Col>
                     </Row>
-                    <Button bsStyle="info" pullRight fill type="submit">
+                    <Button bsStyle="success" pullRight fill type="submit">
                       Update Profile
                     </Button>
                     <div className="clearfix" />
@@ -157,11 +157,11 @@ class UserProfile extends Component {
                 userName="michael24"
                 description={
                   <span>
-                    "Lamborghini Mercy
+                    Descriptionssss
                     <br />
-                    Your chick she so thirsty
+                    Descriptionssss
                     <br />
-                    I'm in that two seat Lambo"
+                    Descriptionssss
                   </span>
                 }
                 socials={

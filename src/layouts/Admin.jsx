@@ -22,13 +22,12 @@ import NotificationSystem from "react-notification-system";
 import AdminNavbar from "components/Navbars/AdminNavbar";
 import Footer from "components/Footer/Footer";
 import Sidebar from "components/Sidebar/Sidebar";
-import FixedPlugin from "components/FixedPlugin/FixedPlugin.jsx";
 
 import { style } from "variables/Variables.jsx";
 
 import routes from "routes.js";
 
-import image from "assets/img/sidebar-3.jpg";
+import image from "assets/img/Lighthouse-01.jpg";
 
 class Admin extends Component {
   constructor(props) {
@@ -123,37 +122,6 @@ class Admin extends Component {
   };
   componentDidMount() {
     this.setState({ _notificationSystem: this.refs.notificationSystem });
-    var _notificationSystem = this.refs.notificationSystem;
-    var color = Math.floor(Math.random() * 4 + 1);
-    var level;
-    switch (color) {
-      case 1:
-        level = "success";
-        break;
-      case 2:
-        level = "warning";
-        break;
-      case 3:
-        level = "error";
-        break;
-      case 4:
-        level = "info";
-        break;
-      default:
-        break;
-    }
-    _notificationSystem.addNotification({
-      title: <span data-notify="icon" className="pe-7s-gift" />,
-      message: (
-        <div>
-          Welcome to <b>Light Bootstrap Dashboard</b> - a beautiful freebie for
-          every web developer.
-        </div>
-      ),
-      level: level,
-      position: "tr",
-      autoDismiss: 15
-    });
   }
   componentDidUpdate(e) {
     if (
@@ -183,16 +151,6 @@ class Admin extends Component {
           />
           <Switch>{this.getRoutes(routes)}</Switch>
           <Footer />
-          <FixedPlugin
-            handleImageClick={this.handleImageClick}
-            handleColorClick={this.handleColorClick}
-            handleHasImage={this.handleHasImage}
-            bgColor={this.state["color"]}
-            bgImage={this.state["image"]}
-            mini={this.state["mini"]}
-            handleFixedClick={this.handleFixedClick}
-            fixedClasses={this.state.fixedClasses}
-          />
         </div>
       </div>
     );

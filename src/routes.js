@@ -15,14 +15,17 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import Dashboard from "views/Dashboard.jsx";
-import UserProfile from "views/UserProfile.jsx";
-import TableList from "views/TableList.jsx";
-import Typography from "views/Typography.jsx";
-import Icons from "views/Icons.jsx";
-import Maps from "views/Maps.jsx";
-import Notifications from "views/Notifications.jsx";
-import Upgrade from "views/Upgrade.jsx";
+import Dashboard from "views/Dashboard/Dashboard.jsx";
+import UserProfile from "views/UserProfile/UserProfile.jsx";
+// import TableList from "views/TableList.jsx";
+// import Typography from "views/Typography.jsx";
+// import Icons from "views/Icons.jsx";
+// import Maps from "views/Maps/Maps.jsx";
+// import Notifications from "views/Notifications.jsx";
+import CompanyList from 'views/Company/CompanyList';
+import ProjectList from 'views/Project/ProjectList';
+import CompanyDetails from 'views/Company/CompanyDetails';
+import ProjectDetails from 'views/Project/ProjectDetails';
 
 const dashboardRoutes = [
   {
@@ -33,55 +36,82 @@ const dashboardRoutes = [
     layout: "/admin"
   },
   {
+    path: "/project",
+    name: "Projects",
+    icon: "pe-7s-note2",
+    component: ProjectList,
+    layout: "/admin"
+  },
+  {
+    path: "/project-info",
+    name: "Project Details",
+    icon: "pe-7s-note2",
+    component: ProjectDetails,
+    layout: "/admin"
+  },
+  {
+    path: "/company",
+    name: "Company",
+    icon: "pe-7s-portfolio",
+    component: CompanyList,
+    layout: "/admin"
+  },
+  {
+    path: "/company-info",
+    name: "Company Details",
+    icon: "pe-7s-portfolio",
+    component: CompanyDetails,
+    layout: "/admin"
+  },
+  {
     path: "/user",
     name: "User Profile",
     icon: "pe-7s-user",
     component: UserProfile,
     layout: "/admin"
   },
-  {
-    path: "/table",
-    name: "Table List",
-    icon: "pe-7s-note2",
-    component: TableList,
-    layout: "/admin"
-  },
-  {
-    path: "/typography",
-    name: "Typography",
-    icon: "pe-7s-news-paper",
-    component: Typography,
-    layout: "/admin"
-  },
-  {
-    path: "/icons",
-    name: "Icons",
-    icon: "pe-7s-science",
-    component: Icons,
-    layout: "/admin"
-  },
-  {
-    path: "/maps",
-    name: "Maps",
-    icon: "pe-7s-map-marker",
-    component: Maps,
-    layout: "/admin"
-  },
-  {
-    path: "/notifications",
-    name: "Notifications",
-    icon: "pe-7s-bell",
-    component: Notifications,
-    layout: "/admin"
-  },
-  {
-    upgrade: true,
-    path: "/upgrade",
-    name: "Upgrade to PRO",
-    icon: "pe-7s-rocket",
-    component: Upgrade,
-    layout: "/admin"
-  }
+  // {
+  //   path: "login",
+  //   name: "Login",
+  //   icon: "pe-7s-science",
+  //   component: LoginPage,
+  //   layout: "/"
+  // },
+  // {
+  //   path: "register",
+  //   name: "Register",
+  //   icon: "pe-7s-science",
+  //   component: LoginPage,
+  //   layout: "/"
+  // },
+  // {
+  //   path: "/notifications",
+  //   name: "Notifications",
+  //   icon: "pe-7s-bell",
+  //   component: Notifications,
+  //   layout: "/admin"
+  // },
+  // {
+  //   path: "/typography",
+  //   name: "Typography",
+  //   icon: "pe-7s-news-paper",
+  //   component: Typography,
+  //   layout: "/admin"
+  // },
+  // {
+  //   path: "/icons",
+  //   name: "Icons",
+  //   icon: "pe-7s-science",
+  //   component: Icons,
+  //   layout: "/admin"
+  // },
+  // {
+  //   path: "/maps",
+  //   name: "Maps",
+  //   icon: "pe-7s-map-marker",
+  //   component: Maps,
+  //   layout: "/admin"
+  // },
 ];
 
 export default dashboardRoutes;
