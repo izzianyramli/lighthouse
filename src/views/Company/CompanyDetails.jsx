@@ -18,7 +18,7 @@ import {
 } from '@material-ui/core';
 import axios from 'axios';
 import { green, red } from '@material-ui/core/colors';
-import { Done, CancelOutlined, CheckCircleOutlineOutlined } from '@material-ui/icons';
+import { Done, CancelOutlined, CheckCircleOutlineOutlined, Add as AddIcon, Edit as EditIcon } from '@material-ui/icons';
 
 class CompanyDetails extends Component {
     constructor(props) {
@@ -38,10 +38,12 @@ class CompanyDetails extends Component {
             engagementStatus: [],
             openDialog: false,
             dialogMessage: '',
-            color: null,
+            dialogColor: null,
             currentData: {},
             submitButton: 'Submit',
-            companyId: '',
+            companyId: Object.values(props.match.params)[0],
+            disabled: true,
+            editDisabled: true,
         };
         this.handleCompanyData = this.handleCompanyData.bind(this);
     };
@@ -112,7 +114,7 @@ class CompanyDetails extends Component {
                         engagementStatus: '',
                         openDialog: true,
                         dialogMessage: 'Company details added',
-                        color: green[500],
+                        dialogColor: green[500],
                         submitButton: 'Submit'
                     })
                 })
@@ -120,7 +122,7 @@ class CompanyDetails extends Component {
                     this.setState({
                         openDialog: true,
                         dialogMessage: 'Company details failed to update',
-                        color: red[500],
+                        dialogColor: red[500],
                         submitButton: 'Submit'
                     })
                 })
@@ -143,7 +145,7 @@ class CompanyDetails extends Component {
                         engagementStatus: '',
                         openDialog: true,
                         dialogMessage: 'Company details edited',
-                        color: green[500],
+                        dialogColor: green[500],
                         submitButton: 'Submit'
                     })
                 })
@@ -151,7 +153,7 @@ class CompanyDetails extends Component {
                     this.setState({
                         openDialog: true,
                         dialogMessage: 'Company details failed to update',
-                        color: red[500],
+                        dialogColor: red[500],
                         submitButton: 'Edit details'
                     })
                 })
@@ -161,30 +163,59 @@ class CompanyDetails extends Component {
 
     handleCompanyData() {
         // console.log('company: ', this.props.location.companyProps);
-        if (this.props.location.companyProps !== undefined) {
-            // console.log(this.props.location.companyProps.id);
-            this.setState({ companyId: this.props.location.companyProps.id });
-            axios.get(`/Company/${this.props.location.companyProps.id}`)
-                .then(res => {
-                    console.log('company data: ', res.data);
-                    this.setState({
-                        companyName: res.data.companyName,
-                        registrationNumber: res.data.registrationNumber,
-                        contactPerson: res.data.contactPerson,
-                        designation: res.data.designation,
-                        contactNumber: res.data.contactNumber,
-                        email: res.data.email,
-                        location: res.data.location,
-                        typeCompany: res.data.typeCompany,
-                        productActivity: res.data.productActivity,
-                        industryDivision: res.data.industryDivision,
-                        status: res.data.status,
-                        engagementStatus: res.data.engagementStatus,
-                        submitButton: 'Edit details'
-                    });
-                })
-                .catch(err => console.log('error company data: ', err))
-        };
+        // if (this.props.location.companyProps !== undefined) {
+        //     // console.log(this.props.location.companyProps.id);
+        //     this.setState({
+        //         companyId: this.props.location.companyProps.id,
+        //         editDisabled: false,
+        //     });
+        axios.get(`/Company/${this.state.companyId}`)
+            .then(res => {
+                console.log('company data: ', res.data);
+                this.setState({
+                    companyName: res.data.companyName,
+                    registrationNumber: res.data.registrationNumber,
+                    contactPerson: res.data.contactPerson,
+                    designation: res.data.designation,
+                    contactNumber: res.data.contactNumber,
+                    email: res.data.email,
+                    location: res.data.location,
+                    typeCompany: res.data.typeCompany,
+                    productActivity: res.data.productActivity,
+                    industryDivision: res.data.industryDivision,
+                    status: res.data.status,
+                    engagementStatus: res.data.engagementStatus,
+                    submitButton: 'Edit details'
+                });
+            })
+            .catch(err => console.log('error company data: ', err))
+        // };
+    }
+
+    handleEdit() {
+        this.setState({
+            disabled: false,
+            submitButton: 'Edit details'
+        });
+    }
+
+    handleAddDetails() {
+        this.setState({
+            companyName: '',
+            registrationNumber: '',
+            contactPerson: '',
+            designation: '',
+            contactNumber: '',
+            email: '',
+            location: '',
+            typeCompany: '',
+            productActivity: '',
+            industryDivision: '',
+            status: '',
+            engagementStatus: '',
+            submitButton: 'Submit',
+            disabled: false,
+        })
     }
 
     render() {
@@ -251,8 +282,8 @@ class CompanyDetails extends Component {
 
         const division = [
             {
-                value: 'Advanced technology and Research & Development',
-                label: 'Advanced technology and Research & Development'
+                value: 'Advanced Technology and Research & Development',
+                label: 'Advanced Technology and Research & Development'
             },
             {
                 value: 'Building Technology and Lifestyle',
@@ -313,6 +344,27 @@ class CompanyDetails extends Component {
                                 title="Company Details"
                                 content={
                                     <div className={classes.root}>
+                                        <Button
+                                            color="primary"
+                                            variant="outlined"
+                                            className={classes.button}
+                                            onClick={() => this.handleAddDetails()}
+                                        >
+                                            <AddIcon /> &nbsp;
+                                            Add New Company
+                                        </Button>
+                                        &nbsp;
+                                        <Button
+                                            color="primary"
+                                            variant="outlined"
+                                            className={classes.button}
+                                            onClick={() => this.handleEdit()}
+                                            disabled={this.state.editDisabled}
+                                        >
+                                            <EditIcon /> &nbsp;
+                                            Edit details
+                                        </Button>
+                                        <br /> <br />
                                         <form
                                             className={classes.textField}
                                             noValidate
@@ -335,6 +387,7 @@ class CompanyDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
+                                                disabled={this.state.disabled}
                                             />
 
                                             <TextField
@@ -346,6 +399,7 @@ class CompanyDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
+                                                disabled={this.state.disabled}
                                             />
 
                                             <TextField
@@ -357,6 +411,7 @@ class CompanyDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
+                                                disabled={this.state.disabled}
                                             />
 
                                             <TextField
@@ -369,13 +424,13 @@ class CompanyDetails extends Component {
                                                 style={{ margin: 8 }}
                                                 fullWidth
                                                 select
+                                                disabled={this.state.disabled}
                                             >
                                                 {type.map((option) => (
                                                     <MenuItem key={option.value} value={option.value}>
                                                         {option.label}
                                                     </MenuItem>
                                                 ))}
-
                                             </TextField>
 
                                             <TextField
@@ -387,6 +442,7 @@ class CompanyDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
+                                                disabled={this.state.disabled}
                                             />
 
                                             <TextField
@@ -399,6 +455,7 @@ class CompanyDetails extends Component {
                                                 style={{ margin: 8 }}
                                                 fullWidth
                                                 select
+                                                disabled={this.state.disabled}
                                             >
                                                 {division.map((option) => (
                                                     <MenuItem key={option.value} value={option.value}>
@@ -424,6 +481,7 @@ class CompanyDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
+                                                disabled={this.state.disabled}
                                             />
 
                                             <TextField
@@ -435,6 +493,7 @@ class CompanyDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
+                                                disabled={this.state.disabled}
                                             />
 
                                             <TextField
@@ -446,6 +505,7 @@ class CompanyDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
+                                                disabled={this.state.disabled}
                                             />
 
                                             <TextField
@@ -457,6 +517,7 @@ class CompanyDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
+                                                disabled={this.state.disabled}
                                             />
                                             &nbsp; <br />
                                             <Typography
@@ -477,6 +538,7 @@ class CompanyDetails extends Component {
                                                 style={{ margin: 8 }}
                                                 fullWidth
                                                 select
+                                                disabled={this.state.disabled}
                                             >
                                                 {status.map((option) => (
                                                     <MenuItem key={option.value} value={option.value}>
@@ -494,6 +556,7 @@ class CompanyDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
+                                                disabled={this.state.disabled}
                                             />
 
                                         </form>
@@ -530,13 +593,13 @@ class CompanyDetails extends Component {
                                         >
                                             <DialogContent>
                                                 <center>
-                                                    {this.state.color === green[500] ?
+                                                    {this.state.dialogColor === green[500] ?
                                                         <div className={classes.root}>
-                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: this.state.color, fontSize: 60 }} />
+                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: this.state.dialogColor, fontSize: 60 }} />
                                                         </div>
                                                         :
                                                         <div>
-                                                            <CancelOutlined className="fa" style={{ color: this.state.color, fontSize: 60 }} />
+                                                            <CancelOutlined className="fa" style={{ color: this.state.dialogColor, fontSize: 60 }} />
                                                         </div>
                                                     }
                                                     <DialogContentText id="alert-dialog-description">

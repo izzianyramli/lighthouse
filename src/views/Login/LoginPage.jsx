@@ -21,9 +21,6 @@ class LoginPage extends Component {
     };
 
     render() {
-
-        // const history = useHistory();
-
         return (
             <div className="content">
                 <Grid fluid>

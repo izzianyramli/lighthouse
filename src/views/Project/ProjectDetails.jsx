@@ -4,7 +4,6 @@ import {
     Row,
     Col,
 } from 'react-bootstrap';
-// import Button from 'components/CustomButton/CustomButton';
 import Card from 'components/Card/Card';
 import {
     TextField,
@@ -16,10 +15,7 @@ import {
     DialogContentText,
     MenuItem,
     Checkbox,
-    FormGroup,
     FormControlLabel,
-    Fab,
-
 } from '@material-ui/core';
 import axios from 'axios';
 import { green, red } from '@material-ui/core/colors';
@@ -27,7 +23,8 @@ import {
     Done,
     CancelOutlined,
     CheckCircleOutlineOutlined,
-    Add as AddIcon
+    Add as AddIcon,
+    Edit as EditIcon,
 } from '@material-ui/icons';
 
 class ProjectDetails extends Component {
@@ -45,9 +42,10 @@ class ProjectDetails extends Component {
             openDialog: false,
             dialogMessage: '',
             color: null,
-            currentData: {},
             submitButton: 'Submit',
-            projectId: '',
+            projectId: Object.values(props.match.params)[0],
+            disabled: true,
+            editDisabled: true,
         };
         this.handleProjectData = this.handleProjectData.bind(this);
     };
@@ -92,7 +90,7 @@ class ProjectDetails extends Component {
         console.log(payload);
         if (this.state.submitButton === 'Submit') {
             axios.post('/Project', payload)
-                .then((res) => {
+                .then(() => {
                     this.setState({
                         duration: '',
                         totalCost: '',
@@ -106,7 +104,7 @@ class ProjectDetails extends Component {
                         submitButton: 'Submit'
                     })
                 })
-                .catch((err) => {
+                .catch(() => {
                     this.setState({
                         openDialog: true,
                         dialogMessage: 'Project details failed to update',
@@ -116,7 +114,7 @@ class ProjectDetails extends Component {
                 })
         } else if (this.state.submitButton === 'Edit details') {
             axios.patch(`/Project/${this.state.projectId}`, payload)
-                .then((res) => {
+                .then(() => {
                     this.setState({
                         duration: '',
                         totalCost: '',
@@ -130,7 +128,7 @@ class ProjectDetails extends Component {
                         submitButton: 'Submit'
                     })
                 })
-                .catch((err) => {
+                .catch(() => {
                     this.setState({
                         openDialog: true,
                         dialogMessage: 'Project details failed to update',
@@ -139,36 +137,58 @@ class ProjectDetails extends Component {
                     })
                 })
         }
-
     }
 
     handleProjectData() {
         console.log('project: ', this.props.location.projectProps);
-        if (this.props.location.projectProps !== undefined) {
-            this.setState({ projectId: this.props.location.projectProps.id })
-            axios.get(`/Project/${this.props.location.projectProps.id}`)
-                .then(res => {
-                    console.log('project data: ', res.data);
+        // if (this.props.location.projectProps !== undefined) {
+        //     this.setState({
+        //         projectId: this.props.location.projectProps.id,
+        //         editDisabled: false,
+        //     })
+        axios.get(`/Project/${this.state.projectId}`)
+            .then(res => {
+                console.log('project data: ', res.data);
+                this.setState({
+                    // companyId: res.data.owner.id,
+                    // companyName: red.data.owner.companyName,
+                    duration: res.data.duration,
+                    totalCost: res.data.totalCost,
+                    sourceOfTechnology: res.data.sourceOfTechnology,
+                    detailsOfTechnology: res.data.detailsOfTechnology,
+                    facilitationNeeded: res.data.facilitationNeeded,
+                    submitButton: 'Edit details'
+                });
+                if (res.data.owner !== undefined) {
                     this.setState({
-                        // companyId: res.data.owner.id,
-                        // companyName: red.data.owner.companyName,
-                        duration: res.data.duration,
-                        totalCost: res.data.totalCost,
-                        sourceOfTechnology: res.data.sourceOfTechnology,
-                        detailsOfTechnology: res.data.detailsOfTechnology,
-                        facilitationNeeded: res.data.facilitationNeeded,
-                        submitButton: 'Edit details'
+                        companyId: res.data.owner.id,
+                        companyName: res.data.owner.companyName,
                     });
-                    if (res.data.owner !== undefined) {
-                        this.setState({
-                            companyId: res.data.owner.id,
-                            companyName: res.data.owner.companyName,
-                        });
-                        console.log(this.state.companyId, this.state.companyName);
-                    }
-                })
-                .catch(err => console.log('error project data: ', err))
-        };
+                    console.log(this.state.companyId, this.state.companyName);
+                }
+            })
+            .catch(err => console.log('error project data: ', err))
+        // };
+    }
+
+    handleEdit() {
+        this.setState({
+            disabled: false,
+            submitButton: 'Edit details'
+        });
+    }
+
+    handleAddDetails() {
+        this.setState({
+            duration: '',
+            totalCost: '',
+            sourceOfTechnology: '',
+            detailsOfTechnology: '',
+            facilitationNeeded: '',
+            phase: [],
+            submitButton: 'Submit',
+            disabled: false,
+        })
     }
 
     render() {
@@ -285,9 +305,21 @@ class ProjectDetails extends Component {
                                             color="primary"
                                             variant="outlined"
                                             className={classes.button}
+                                            onClick={() => this.handleAddDetails()}
                                         >
                                             <AddIcon /> &nbsp;
                                             Add New Project
+                                        </Button>
+                                        &nbsp;
+                                        <Button
+                                            color="primary"
+                                            variant="outlined"
+                                            className={classes.button}
+                                            onClick={() => this.handleEdit()}
+                                            disabled={this.state.editDisabled}
+                                        >
+                                            <EditIcon /> &nbsp;
+                                            Edit details
                                         </Button>
                                         &nbsp; <br />
                                         <form
@@ -313,7 +345,7 @@ class ProjectDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
-                                                disabled
+                                                disabled={true}
                                             />
 
                                             <TextField
@@ -325,7 +357,7 @@ class ProjectDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
-                                                disabled
+                                                disabled={true}
                                             />
                                             &nbsp; <br />
                                             <Typography
@@ -345,6 +377,7 @@ class ProjectDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
+                                                disabled={this.state.disabled}
                                             />
 
                                             <TextField
@@ -356,6 +389,7 @@ class ProjectDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
+                                                disabled={this.state.disabled}
                                             />
 
                                             <TextField
@@ -368,6 +402,7 @@ class ProjectDetails extends Component {
                                                 style={{ margin: 8 }}
                                                 fullWidth
                                                 select
+                                                disabled={this.state.disabled}
                                             >
                                                 {source.map((option) => (
                                                     <MenuItem key={option.value} value={option.value}>
@@ -385,6 +420,7 @@ class ProjectDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
+                                                disabled={this.state.disabled}
                                             />
 
                                             <TextField
@@ -396,6 +432,7 @@ class ProjectDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
+                                                disabled={this.state.disabled}
                                             />
 
                                             {/* <TextField
@@ -433,6 +470,7 @@ class ProjectDetails extends Component {
                                                         />
                                                     }
                                                     label={option.label}
+                                                    disabled={this.state.disabled}
                                                 />
 
                                             ))}

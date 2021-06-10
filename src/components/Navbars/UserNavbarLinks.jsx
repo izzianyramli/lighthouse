@@ -18,7 +18,7 @@
 import React, { Component } from "react";
 import { NavItem, Nav, NavDropdown, MenuItem } from "react-bootstrap";
 
-class AdminNavbarLinks extends Component {
+class UserNavbarLinks extends Component {
   render() {
     const notification = (
       <div>
@@ -53,7 +53,7 @@ class AdminNavbarLinks extends Component {
           </NavItem> */}
         </Nav>
         <Nav pullRight>
-          <NavItem eventKey={1} href="/admin/profile">
+          <NavItem eventKey={1} href="/user/profile">
             Profile
           </NavItem>
           {/* <NavDropdown
@@ -78,4 +78,4 @@ class AdminNavbarLinks extends Component {
   }
 }
 
-export default AdminNavbarLinks;
+export default UserNavbarLinks;

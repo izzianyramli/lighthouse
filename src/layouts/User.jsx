@@ -19,9 +19,9 @@ import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import NotificationSystem from "react-notification-system";
 
-import AdminNavbar from "components/Navbars/AdminNavbar";
+import UserNavbar from "components/Navbars/UserNavbar";
 import Footer from "components/Footer/Footer";
-import AdminSidebar from "components/Sidebar/AdminSidebar";
+import UserSidebar from "components/Sidebar/UserSidebar";
 
 import { style } from "variables/Variables.jsx";
 
@@ -29,7 +29,7 @@ import routes from "routes.js";
 
 import image from "assets/img/Lighthouse-01.jpg";
 
-class Admin extends Component {
+class User extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -74,7 +74,7 @@ class Admin extends Component {
   };
   getRoutes = routes => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
+      if (prop.layout === "/user") {
         return (
           <Route
             path={prop.layout + prop.path}
@@ -141,11 +141,11 @@ class Admin extends Component {
     return (
       <div className="wrapper">
         <NotificationSystem ref="notificationSystem" style={style} />
-        <AdminSidebar {...this.props} routes={routes} image={this.state.image}
-        color={this.state.color}
-        hasImage={this.state.hasImage}/>
+        <UserSidebar {...this.props} routes={routes} image={this.state.image}
+          color={this.state.color}
+          hasImage={this.state.hasImage} />
         <div id="main-panel" className="main-panel" ref="mainPanel">
-          <AdminNavbar
+          <UserNavbar
             {...this.props}
             brandText={this.getBrandText(this.props.location.pathname)}
           />
@@ -157,4 +157,4 @@ class Admin extends Component {
   }
 }
 
-export default Admin;
+export default User;

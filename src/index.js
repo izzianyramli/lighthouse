@@ -27,6 +27,7 @@ import "./assets/css/demo.css";
 import "./assets/css/pe-icon-7-stroke.css";
 
 import AdminLayout from "layouts/Admin.jsx";
+import UserLayout from "layouts/User.jsx";
 import LoginPage from "views/Login/LoginPage.jsx";
 import RegisterPage from "views/Register/RegisterPage.jsx";
 import RegisterSuccessPage from "views/Register/RegisterSuccess.jsx";
@@ -35,6 +36,7 @@ ReactDOM.render(
   <BrowserRouter>
     <Switch>
       <Route path="/admin" render={props => <AdminLayout {...props} />} />
+      <Route path="/user" render={props => <UserLayout {...props} />} />
       <Route path="/login" render={() => <LoginPage />} />
       <Route path="/register" render={() => <RegisterPage />} />
       <Route path="/register-success" render={()=> <RegisterSuccessPage />} />

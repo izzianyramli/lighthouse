@@ -15,38 +15,56 @@ import {
 } from 'react-router-dom';
 import axios from 'axios';
 
-var values = {
-    firstName: '',
-    lastName: '',
-    companyName: '',
-    division: '',
-    email: '',
-    password: '',
-    policy: false,
-};
-
 class RegisterPage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            firstName: '',
+            lastName: '',
+            companyName: '',
+            division: '',
+            email: '',
+            password: '',
+            policy: false,
+        }
+    }
 
-    gotoDashboard(path) {
+    gotoRegisterSuccess(path) {
         this.props.history.push(path);
     };
 
-    submitAccountDetails(event, values) {
+    handleChange(event) {
+        console.log(event.target.value);
+        this.setState({
+            [event.target.name]: event.target.value,
+        });
+    }
+
+    submitAccountDetails(
+        event,
+        firstName,
+        lastName,
+        companyName,
+        division,
+        email,
+        password,
+        policy
+    ) {
         event.preventDefault();
         const payload = {
-            firstName: values.firstName,
-            lastName: values.lastName,
-            companyName: values.companyName,
-            division: values.division,
-            email: values.email,
-            password: values.password,
-            policy: values.policy
+            firstName: firstName,
+            lastName: lastName,
+            companyName: companyName,
+            division: division,
+            email: email,
+            password: password,
+            policy: policy
         };
 
         axios.post('/Account', payload)
             .then(res => {
                 console.log('registration success, res: ', res);
-                this.gotoDashboard('/admin/dashboard');
+                this.gotoRegisterSuccess('/register-success');
             })
             .catch(err => console.log('registration failed, err: ', err));
     };
@@ -62,24 +80,31 @@ class RegisterPage extends Component {
                                 content={
                                     <div>
                                         <img src={MIDALogo} width="25%" height="150vh" alt="mida" />
-                                        <form>
+                                        <form
+                                            noValidate
+                                            autoComplete='off'
+                                        >
                                             <h4><b>Name</b></h4>
                                             <FormInputs
                                                 ncols={["col-md-6", "col-md-6"]}
                                                 properties={[
                                                     {
                                                         label: "First Name",
+                                                        name: "firstName",
                                                         type: "text",
                                                         bsClass: "form-control",
                                                         placeholder: "Enter your first name",
-                                                        value: values.firstName,
+                                                        onChange: (event) => this.handleChange(event),
+                                                        value: this.state.firstName,
                                                     },
                                                     {
                                                         label: "Last Name",
+                                                        name: "lastName",
                                                         type: "text",
                                                         bsClass: "form-control",
                                                         placeholder: "Enter your last name",
-                                                        value: values.lastName
+                                                        onChange: (event) => this.handleChange(event),
+                                                        value: this.state.lastName
                                                     },
                                                 ]}
                                             />
@@ -89,17 +114,21 @@ class RegisterPage extends Component {
                                                 properties={[
                                                     {
                                                         label: "Company Name",
+                                                        name: "companyName",
                                                         type: "text",
                                                         bsClass: "form-control",
                                                         placeholder: "Enter your company name",
-                                                        value: values.companyName
+                                                        onChange: (event) => this.handleChange(event),
+                                                        value: this.state.companyName
                                                     },
                                                     {
                                                         label: "Division",
+                                                        name: "division",
                                                         type: "text",
                                                         bsClass: "form-control",
                                                         placeholder: "Enter your division in company",
-                                                        value: values.division
+                                                        onChange: (event) => this.handleChange(event),
+                                                        value: this.state.division
                                                     },
                                                 ]}
                                             />
@@ -109,17 +138,21 @@ class RegisterPage extends Component {
                                                 properties={[
                                                     {
                                                         label: "Email",
+                                                        name: "email",
                                                         type: "email",
                                                         bsClass: "form-control",
                                                         placeholder: "Enter your email",
-                                                        value: values.email
+                                                        onChange: (event) => this.handleChange(event),
+                                                        value: this.state.email
                                                     },
                                                     {
                                                         label: "Password",
+                                                        name: "password",
                                                         type: "password",
                                                         bsClass: "form-control",
                                                         placeholder: "Enter your preferred password",
-                                                        value: values.password
+                                                        onChange: (event) => this.handleChange(event),
+                                                        value: this.state.password
                                                     },
                                                     {
                                                         type: "password",
@@ -129,15 +162,31 @@ class RegisterPage extends Component {
                                                 ]}
                                             />
                                             <CustomCheckbox
-                                                isChecked={true}
+                                                isChecked={this.state.policy}
+                                                name="policy"
                                                 number={1}
                                                 label={`I have read and agree with the Terms and Conditions`}
                                                 inline={false}
-                                                value={values.policy}
                                             />
                                         </form>
                                         <h5>Already have an account? <Link to="/login">Login here</Link></h5>
-                                        <Button bsStyle="success" pullLeft fill as="input" type="submit" value="Submit" onClick={(event) => this.submitAccountDetails(event, [values])} >
+                                        <Button
+                                            bsStyle="success"
+                                            pullLeft fill
+                                            as="input"
+                                            type="submit"
+                                            value="Submit"
+                                            onClick={(event) => this.submitAccountDetails(
+                                                event,
+                                                this.state.firstName,
+                                                this.state.lastName,
+                                                this.state.companyName,
+                                                this.state.division,
+                                                this.state.email,
+                                                this.state.password,
+                                                this.state.policy
+                                            )}
+                                        >
                                             Register
                                         </Button>
                                         <br />

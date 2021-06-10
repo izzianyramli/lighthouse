@@ -22,11 +22,11 @@ import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 
 import logo from "assets/img/mida-logo-1.png";
 
-class Sidebar extends Component {
+class AdminSidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      width: window.innerWidth
+      width: window.innerWidth,
     };
   }
   activeRoute(routeName) {
@@ -39,10 +39,12 @@ class Sidebar extends Component {
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions.bind(this));
   }
+
   render() {
     const sidebarBackground = {
       backgroundImage: "url(" + this.props.image + ")"
     };
+
     return (
       <div
         id="sidebar"
@@ -53,41 +55,44 @@ class Sidebar extends Component {
         {this.props.hasImage ? (
           <div className="sidebar-background" style={sidebarBackground} />
         ) : (
-            null
-          )}
-        <div style={{zIndex: 4, position: "relative", padding: "10px"}} >
-        <a
-          href="https://www.mida.gov.my/"
-          className="simple-text logo-mini"
-        >
+          null
+        )}
+        <div style={{ zIndex: 4, position: "relative", padding: "10px" }} >
+          <a
+            href="https://www.mida.gov.my/"
+            className="simple-text logo-mini"
+          >
             <img src={logo} alt="logo_image" width="200px" align="center" />
-        </a>
+          </a>
         </div>
         <div className="sidebar-wrapper">
           <ul className="nav">
             {this.state.width <= 991 ? <AdminNavbarLinks /> : null}
             {this.props.routes.map((prop, key) => {
               if (!prop.redirect)
-                return (
-                  <li
-                    className={
-                      prop.upgrade
-                        ? "active active-pro"
-                        : this.activeRoute(prop.layout + prop.path)
-                    }
-                    key={key}
-                  >
-                    <NavLink
-                      to={prop.layout + prop.path}
-                      className="nav-link"
-                      activeClassName="active"
-                    >
-                      <i className={prop.icon} />
-                      <p>{prop.name}</p>
-                    </NavLink>
-                  </li>
-                );
-              return null;
+                if (prop.layout === '/admin') {
+                  if (prop.invisible !== true)
+                    return (
+                      <li
+                        className={
+                          prop.upgrade
+                            ? "active active-pro"
+                            : this.activeRoute(prop.layout + prop.path)
+                        }
+                        key={key}
+                      >
+                        <NavLink
+                          to={prop.layout + prop.path}
+                          className="nav-link"
+                          activeClassName="active"
+                        >
+                          <i className={prop.icon} />
+                          <p>{prop.name}</p>
+                        </NavLink>
+                      </li>
+                    );
+                  return null;
+                }
             })}
           </ul>
         </div>
@@ -96,4 +101,4 @@ class Sidebar extends Component {
   }
 }
 
-export default Sidebar;
+export default AdminSidebar;

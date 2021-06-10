@@ -32,7 +32,7 @@ class CustomButton extends Component {
       "btn-round": round
     });
 
-    return <Button className={btnClasses} {...rest} />;
+    return <Button className={btnClasses} {...rest} variant="outline-primary" />;
   }
 }
 
