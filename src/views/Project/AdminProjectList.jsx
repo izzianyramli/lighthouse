@@ -50,20 +50,17 @@ class AdminProjectList extends Component {
         this.fetchProjectData();
     };
 
-    fetchProjectData(msg) {
-        // { msg ? console.log('updating project data, msg: ', msg) : console.log('fetching data') }
+    fetchProjectData() {
         axios.get('/Project')
             .then(project => {
-                console.log('Project: ', project.data);
                 this.setState({ project: project.data });
             })
             .catch(err => console.log('Error to fetch project data: ', err));
     };
 
     updateProjectData() {
-        io.socket.on('project', (msg) => {
-            console.log(`socket.on | msg: ${msg}`);
-            this.fetchProjectData(msg);
+        io.socket.on('project', () => {
+            this.fetchProjectData();
         })
     };
 
@@ -76,18 +73,15 @@ class AdminProjectList extends Component {
     }
 
     deleteProject(projectId) {
-        console.log(`delete ${projectId}`);
         axios.delete(`/Project/${projectId}`)
             .then(() => {
-                console.log(`Deleted ${projectId}`);
                 this.setState({
                     openDialog: true,
                     dialogMessage: 'Project details deleted',
                     dialogColor: green[500]
                 });
             })
-            .catch(err => {
-                console.log(`Delete error: ${err}`);
+            .catch(() => {
                 this.setState({
                     openDialog: true,
                     dialogMessage: 'Failed to delete project',
@@ -97,10 +91,8 @@ class AdminProjectList extends Component {
     };
 
     editProject(projectId) {
-        console.log(`edit ${projectId}`);
         axios.get(`/Project/${projectId}`)
-            .then(res => {
-                console.log(res.data);
+            .then(() => {
                 this.gotoProjectInfo(`/admin/project-info/${projectId}`);
             })
             .catch(err => console.log(err))

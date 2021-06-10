@@ -47,40 +47,23 @@ class UserProjectList extends Component {
     };
 
     componentDidMount() {
-        // this.fetchProjectData();
         this.fetchCompanyData();
     };
 
-    // fetchProjectData(msg) {
-    //     // { msg ? console.log('updating project data, msg: ', msg) : console.log('fetching data') }
-    //     axios.get('/Project')
-    //         .then(project => {
-    //             console.log('Project: ', project.data);
-    //             this.setState({ project: project.data });
-    //         })
-    //         .catch(err => console.log('Error to fetch project data: ', err));
-    // };
     fetchCompanyData() {
         axios.get('/Company/602f3effd90dbc6c9dc0323e')
             .then(res => {
-                console.log('Company data: ', res.data);
-                // if (res.data.project !== undefined) {
-                //   console.log('project: ', res.data.project);
-                // };
                 this.setState({
                     company: res.data,
                     project: res.data.projects,
                     lighthouse: res.data.lighthouseDetails
                 });
-                console.log('company: ', this.state.company);
             })
             .catch(err => console.log('Error fetching company data: ', err));
     };
 
     updateProjectData() {
-        io.socket.on('project', (msg) => {
-            console.log(`socket.on | msg: ${msg}`);
-            // this.fetchProjectData(msg);
+        io.socket.on('project', () => {
             this.fetchCompanyData();
         })
     };
@@ -94,18 +77,15 @@ class UserProjectList extends Component {
     }
 
     deleteProject(projectId) {
-        console.log(`delete ${projectId}`);
         axios.delete(`/Project/${projectId}`)
             .then(() => {
-                console.log(`Deleted ${projectId}`);
                 this.setState({
                     openDialog: true,
                     dialogMessage: 'Project details deleted',
                     dialogColor: green[500]
                 });
             })
-            .catch(err => {
-                console.log(`Delete error: ${err}`);
+            .catch(() => {
                 this.setState({
                     openDialog: true,
                     dialogMessage: 'Failed to delete project',
@@ -115,10 +95,8 @@ class UserProjectList extends Component {
     };
 
     editProject(projectId) {
-        console.log(`edit ${projectId}`);
         axios.get(`/Project/${projectId}`)
-            .then(res => {
-                console.log(res.data);
+            .then(() => {
                 this.gotoProjectInfo(`/user/project-info/${projectId}`);
             })
             .catch(err => console.log(err))

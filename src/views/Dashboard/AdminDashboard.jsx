@@ -22,9 +22,7 @@ class AdminDashboard extends Component {
 
   createLegend(json) {
     var legend = [];
-    // console.log('json: ', json);
     for (var i = 0; i < json["names"].length; i++) {
-      // var type = "fa fa-circle" + json["types"][i];
       var type = "fa fa-circle";
       var colors = json["colorType"][i];
       legend.push(<i className={type} key={i} style={{ color: colors }} />);
@@ -57,9 +55,7 @@ class AdminDashboard extends Component {
   fetchCompanyData() {
     axios.get('/Company')
       .then(res => {
-        // console.log('Company data: ', res.data);
         this.setState({ company: res.data });
-        // console.log(res.data[0].location);
       })
       .catch(err => console.log('Error fetching company data: ', err));
   };
@@ -86,7 +82,6 @@ class AdminDashboard extends Component {
 
   humanizeDateTime = async () => {
     const datetimeDiff = new Date() - date;
-    // console.log('dateTimeDiffer: ', datetimeDiff);
     if (datetimeDiff < 120000) {
       return this.setState({ timePassed: 'Updated just a moment ago' });
     } else if (datetimeDiff >= 120000) {

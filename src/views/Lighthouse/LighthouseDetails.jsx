@@ -123,7 +123,6 @@ class LighthouseDetails extends Component {
             customization: customization,
             others: others,
         };
-        console.log(payload);
         if (this.state.submitButton === 'Submit') {
             axios.post('/Lighthouse', payload)
                 .then((res) => {
@@ -182,7 +181,6 @@ class LighthouseDetails extends Component {
     handleLighthouseData() {
         axios.get(`/Lighthouse/${this.state.lighthouseId}`)
             .then(res => {
-                console.log('lighthouse data: ', res.data);
                 this.setState({
                     model: res.data.lighthouseModel,
                     type: res.data.lighthouseType,
@@ -195,13 +193,11 @@ class LighthouseDetails extends Component {
                     submitButton: 'Edit details',
                     project: res.data.projects,
                 });
-                console.log(this.state.model);
                 if (res.data.owner !== undefined) {
                     this.setState({
                         companyId: res.data.owner.id,
                         companyName: res.data.owner.companyName,
                     });
-                    console.log(this.state.companyId, this.state.companyName);
                 };
             })
             .catch(err => console.log('error project data: ', err))
@@ -230,18 +226,15 @@ class LighthouseDetails extends Component {
     };
 
     deleteProject(projectId) {
-        console.log(`delete ${projectId}`);
         axios.delete(`/Project/${projectId}`)
             .then(() => {
-                console.log(`Deleted ${projectId}`);
                 this.setState({
                     openDialog: true,
                     dialogMessage: 'Project details deleted',
                     dialogColor: green[500]
                 });
             })
-            .catch(err => {
-                console.log(`Delete error: ${err}`);
+            .catch(() => {
                 this.setState({
                     openDialog: true,
                     dialogMessage: 'Failed to delete project',

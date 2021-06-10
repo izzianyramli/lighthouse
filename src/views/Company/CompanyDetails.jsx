@@ -95,7 +95,6 @@ class CompanyDetails extends Component {
             status: status,
             engagementStatus: engagementStatus
         };
-        console.log('payload', payload);
         if (this.state.submitButton === 'Submit') {
             axios.post('/Company', payload)
                 .then((res) => {
@@ -129,7 +128,6 @@ class CompanyDetails extends Component {
         } else if (this.state.submitButton === 'Edit details') {
             axios.patch(`/Company/${this.state.companyId}`, payload)
                 .then((res) => {
-                    // console.log(`Edited ${res.data.companyName}`);
                     this.setState({
                         companyName: '',
                         registrationNumber: '',
@@ -162,16 +160,8 @@ class CompanyDetails extends Component {
     }
 
     handleCompanyData() {
-        // console.log('company: ', this.props.location.companyProps);
-        // if (this.props.location.companyProps !== undefined) {
-        //     // console.log(this.props.location.companyProps.id);
-        //     this.setState({
-        //         companyId: this.props.location.companyProps.id,
-        //         editDisabled: false,
-        //     });
         axios.get(`/Company/${this.state.companyId}`)
             .then(res => {
-                console.log('company data: ', res.data);
                 this.setState({
                     companyName: res.data.companyName,
                     registrationNumber: res.data.registrationNumber,

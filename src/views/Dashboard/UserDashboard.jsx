@@ -31,7 +31,7 @@ class UserDashboard extends Component {
 
   componentDidMount() {
     this.fetchCompanyData();
-    this.fetchProjectData();
+    this.fetchLighthouseData();
     this.interval = setInterval(() => {
       this.humanizeDateTime();
     }, 2000);
@@ -45,32 +45,27 @@ class UserDashboard extends Component {
   fetchCompanyData() {
     axios.get('/Company/602f0b2b2d925c5ba0817c7d')
       .then(res => {
-        console.log('Company data: ', res.data.lighthouseDetails);
-        // if (res.data.project !== undefined) {
-        //   console.log('project: ', res.data.project);
-        // };
         this.setState({
           company: res.data,
-          // project: res.data.lighthouseDetails[0].projects,
           lighthouse: res.data.lighthouseDetails
         });
-        console.log('company: ', this.state.company);
       })
       .catch(err => console.log('Error fetching company data: ', err));
   };
 
-  fetchProjectData() {
+  fetchLighthouseData() {
     axios.get('/Lighthouse')
       .then(res => {
         for (const [, value] of Object.entries(res.data)) {
-          // console.log(key, value)
           if (value.owner === "602f0b2b2d925c5ba0817c7d") {
-            // if (value.projects.lighthouse.id === this.state.lighthouse.id) {
-            console.log(value.projects);
             this.setState({ project: value.projects });
           }
         }
       })
+  }
+
+  fetchProjectData() {
+    axios.get('/')
   }
 
   currencyFormat(num) {
@@ -79,7 +74,6 @@ class UserDashboard extends Component {
 
   humanizeDateTime = async () => {
     const datetimeDiff = new Date() - date;
-    // console.log('dateTimeDiffer: ', datetimeDiff);
     if (datetimeDiff < 120000) {
       return this.setState({ timePassed: 'Updated just a moment ago' });
     } else if (datetimeDiff >= 120000) {
@@ -159,10 +153,9 @@ class UserDashboard extends Component {
           <Row>
             <Col>
               <Card
-                title="Tasks"
-                category="Backend development"
-                stats="Updated 3 minutes ago"
-                statsIcon="fa fa-history"
+                title="Companies involved"
+                stats={timePassed}
+                statsIcon={<i className="fa fa-refresh" />}
                 content={
                   <div className="table-full-width">
                     <table className="table">

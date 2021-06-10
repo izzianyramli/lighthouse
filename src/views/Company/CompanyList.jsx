@@ -135,7 +135,6 @@ class CompanyList extends Component {
         if (this.state.companyDivision !== null) {
             axios.get(`/company?industryDivision=${this.state.companyDivision}`)
                 .then(company => {
-                    console.log('Company: ', this.state.companyDivision, company);
                     this.setState({ company: company.data });
                 })
                 .catch(() => {
@@ -144,7 +143,6 @@ class CompanyList extends Component {
         } else {
             axios.get('/Company')
                 .then(company => {
-                    console.log("Company: ", company.data);
                     this.setState({ company: company.data });
                 })
                 .catch(err => console.log("Error to fetch company data: ", err));
@@ -154,7 +152,6 @@ class CompanyList extends Component {
 
     updateCompanyData() {
         io.socket.on('company', (msg) => {
-            console.log(`socket.on | msg: ${msg}`);
             this.fetchCompanyData(msg);
         })
     };
@@ -167,18 +164,15 @@ class CompanyList extends Component {
     }
 
     deleteCompany(companyId) {
-        console.log(`delete ${companyId}`);
         axios.delete(`/Company/${companyId}`)
             .then(() => {
-                console.log(`Deleted ${companyId}`);
                 this.setState({
                     openDialog: true,
                     dialogMessage: 'Company details deleted',
                     dialogColor: green[500],
                 })
             })
-            .catch(err => {
-                console.log(`Delete error: ${err}`);
+            .catch(() => {
                 this.setState({
                     openDialog: true,
                     dialogMessage: 'Failed to delete company',
@@ -195,7 +189,6 @@ class CompanyList extends Component {
     handleChange(event) {
         event.preventDefault();
         this.setState({ companyDivision: event.target.value, });
-        console.log('comp div: ', this.state.companyDivision);
         this.fetchCompanyData();
     }
 

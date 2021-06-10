@@ -49,7 +49,6 @@ class Account extends Component {
     fetchUser() {
         axios.get('/Account')
             .then(res => {
-                console.log('account: ', res.data);
                 this.setState({
                     account: res.data,
                 });
@@ -58,18 +57,15 @@ class Account extends Component {
     }
 
     deleteUser(userId) {
-        console.log(`delete ${userId}`);
         axios.delete(`/Account/${userId}`)
             .then(() => {
-                console.log(`Deleted ${userId}`);
                 this.setState({
                     openDialog: true,
                     dialogMessage: 'User account deleted',
                     dialogColor: green[500]
                 });
             })
-            .catch(err => {
-                console.log(`Delete error: ${err}`);
+            .catch(() => {
                 this.setState({
                     openDialog: true,
                     dialogMessage: 'Failed to delete user account',

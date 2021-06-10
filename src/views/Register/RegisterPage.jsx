@@ -34,7 +34,6 @@ class RegisterPage extends Component {
     };
 
     handleChange(event) {
-        console.log(event.target.value);
         this.setState({
             [event.target.name]: event.target.value,
         });
@@ -62,8 +61,7 @@ class RegisterPage extends Component {
         };
 
         axios.post('/Account', payload)
-            .then(res => {
-                console.log('registration success, res: ', res);
+            .then(() => {
                 this.gotoRegisterSuccess('/register-success');
             })
             .catch(err => console.log('registration failed, err: ', err));

@@ -35,7 +35,6 @@ class UserLighthouse extends Component {
     };
 
     componentDidMount() {
-        // this.fetchLighthouseData();
         this.fetchCompanyData();
         this.fetchProjectData();
     };
@@ -51,25 +50,18 @@ class UserLighthouse extends Component {
     fetchCompanyData() {
         axios.get('/Company/602f0b2b2d925c5ba0817c7d')
             .then(res => {
-                // console.log('Company data: ', res.data);
-                // if (res.data.project !== undefined) {
-                //   console.log('project: ', res.data.project);
-                // };
                 this.setState({
                     // company: res.data,
                     // project: res.data.projects,
                     lighthouseId: res.data.lighthouseDetails.id,
                     lighthouse: res.data.lighthouseDetails,
                 });
-                // console.log('company: ', this.state.company);
             })
             .catch(err => console.log('Error fetching company data: ', err));
     };
 
     updateLighthouseData() {
-        io.socket.on('lighthouse', (msg) => {
-            console.log(`socket.on | msg: ${msg}`);
-            // this.fetchLighthouseData(msg);
+        io.socket.on('lighthouse', () => {
             this.fetchCompanyData();
         })
     };
@@ -79,8 +71,6 @@ class UserLighthouse extends Component {
             .then(res => {
                 for (const [, value] of Object.entries(res.data)) {
                     if (value.owner === "602f0b2b2d925c5ba0817c7d") {
-                        // if (value.projects.lighthouse.id === this.state.lighthouse.id) {
-                        console.log(value.projects);
                         this.setState({ project: value.projects });
                     }
                 }
@@ -88,18 +78,15 @@ class UserLighthouse extends Component {
     }
 
     deleteLighthouse(lighthouseId) {
-        console.log(`delete ${lighthouseId}`);
         axios.delete(`/Lighthouse/${lighthouseId}`)
             .then(() => {
-                console.log(`Deleted ${lighthouseId}`);
                 this.setState({
                     openDialog: true,
                     dialogMessage: 'Lighthouse project deleted',
                     dialogColor: green[500],
                 });
             })
-            .catch(err => {
-                console.log(`Delete error: ${err}`);
+            .catch(() => {
                 this.setState({
                     openDialog: true,
                     dialogMessage: 'Failed to delete lighthouse project',

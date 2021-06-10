@@ -45,36 +45,30 @@ class AdminLighthouse extends Component {
         this.setState({ openDialog: false });
     }
 
-    fetchLighthouseData(msg) {
-        // { msg ? console.log('updating lighthouse data, msg: ', msg) : console.log('fetching data') }
+    fetchLighthouseData() {
         axios.get('/Lighthouse')
             .then(lighthouse => {
-                console.log('Lighthouse: ', lighthouse.data);
                 this.setState({ lighthouse: lighthouse.data })
             })
             .catch(err => console.log('Error to fetch lighthouse data: ', err));
     };
 
     updateLighthouseData() {
-        io.socket.on('lighthouse', (msg) => {
-            console.log(`socket.on | msg: ${msg}`);
-            this.fetchLighthouseData(msg);
+        io.socket.on('lighthouse', () => {
+            this.fetchLighthouseData();
         })
     };
 
     deleteLighthouse(lighthouseId) {
-        console.log(`delete ${lighthouseId}`);
         axios.delete(`/Lighthouse/${lighthouseId}`)
             .then(() => {
-                console.log(`Deleted${lighthouseId}`);
                 this.setState({
                     openDialog: true,
                     dialogMessage: 'Lighthouse project deleted',
                     dialogColor: green[500],
                 });
             })
-            .catch(err => {
-                console.log(`Delete error: ${err}`);
+            .catch(() => {
                 this.setState({
                     openDialog: true,
                     dialogMessage: 'Failed to delete lighthouse project',

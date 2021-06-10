@@ -87,7 +87,6 @@ class ProjectDetails extends Component {
             facilitationNeeded: facilitationNeeded,
             phase: [phase]
         };
-        console.log(payload);
         if (this.state.submitButton === 'Submit') {
             axios.post('/Project', payload)
                 .then(() => {
@@ -140,15 +139,8 @@ class ProjectDetails extends Component {
     }
 
     handleProjectData() {
-        console.log('project: ', this.props.location.projectProps);
-        // if (this.props.location.projectProps !== undefined) {
-        //     this.setState({
-        //         projectId: this.props.location.projectProps.id,
-        //         editDisabled: false,
-        //     })
         axios.get(`/Project/${this.state.projectId}`)
             .then(res => {
-                console.log('project data: ', res.data);
                 this.setState({
                     // companyId: res.data.owner.id,
                     // companyName: red.data.owner.companyName,
@@ -164,7 +156,6 @@ class ProjectDetails extends Component {
                         companyId: res.data.owner.id,
                         companyName: res.data.owner.companyName,
                     });
-                    console.log(this.state.companyId, this.state.companyName);
                 }
             })
             .catch(err => console.log('error project data: ', err))
