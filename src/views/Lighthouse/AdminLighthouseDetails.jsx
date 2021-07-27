@@ -16,6 +16,7 @@ import {
     Dialog,
     DialogContent,
     DialogContentText,
+    MenuItem,
 } from '@material-ui/core';
 import axios from 'axios';
 import { green, red } from '@material-ui/core/colors';
@@ -32,9 +33,7 @@ const projectInfo = [
     "Duration",
     "Total Cost",
     "Source of Technology",
-    // "Details of Technology",
-    "Facilitations Needed",
-    // "Phase"
+    "Vendor",
 ];
 
 // const lighthouseId = Object.values(props.match.params)[0];
@@ -55,6 +54,21 @@ function nFormatter(num) {
     return num;
 };
 
+function getVendorCompany(vendorId) {
+    var vendorName = "";
+    console.log('vendorId: ', vendorId);
+    axios.get(`/Company/${vendorId}`)
+        .then(res => {
+            console.log(res.data.companyName);
+            // return `${res.data.companyName}`
+            vendorName = res.data.companyName;
+            console.log(vendorName);
+        })
+        .catch(() => vendorName = "No vendor assigned")
+    console.log("vendorName: ", vendorName);
+    return vendorName;
+};
+
 class LighthouseDetails extends Component {
     constructor(props) {
         super(props);
@@ -64,9 +78,9 @@ class LighthouseDetails extends Component {
             companyName: '',
             model: '',
             type: '',
-            productivity: [],
-            sustainability: [],
-            agility: [],
+            productivity: '',
+            sustainability: '',
+            agility: '',
             speedToMarket: '',
             customization: '',
             others: '',
@@ -113,25 +127,25 @@ class LighthouseDetails extends Component {
     ) {
         event.preventDefault();
         const payload = {
-            owner: companyId,
+            company: companyId,
             lighthouseModel: model,
             lighthouseType: type,
-            productivity: [productivity],
-            sustainability: [sustainability],
-            agility: [agility],
+            productivity: productivity,
+            sustainability: sustainability,
+            agility: agility,
             speedToMarket: speedToMarket,
             customization: customization,
             others: others,
         };
         if (this.state.submitButton === 'Submit') {
             axios.post('/Lighthouse', payload)
-                .then((res) => {
+                .then(() => {
                     this.setState({
                         model: '',
                         type: '',
-                        productivity: [],
-                        sustainability: [],
-                        agility: [],
+                        productivity: '',
+                        sustainability: '',
+                        agility: '',
                         speedToMarket: '',
                         customization: '',
                         others: '',
@@ -141,7 +155,7 @@ class LighthouseDetails extends Component {
                         submitButton: 'Submit'
                     })
                 })
-                .catch((err) => {
+                .catch(() => {
                     this.setState({
                         openDialog: true,
                         dialogMessage: 'Lighthouse details failed to update',
@@ -151,13 +165,13 @@ class LighthouseDetails extends Component {
                 })
         } else if (this.state.submitButton === 'Edit details') {
             axios.patch(`/Lighthouse/${this.state.lighthouseId}`, payload)
-                .then((res) => {
+                .then(() => {
                     this.setState({
                         model: '',
                         type: '',
-                        productivity: [],
-                        sustainability: [],
-                        agility: [],
+                        productivity: '',
+                        sustainability: '',
+                        agility: '',
                         speedToMarket: '',
                         customization: '',
                         others: '',
@@ -184,7 +198,7 @@ class LighthouseDetails extends Component {
                 this.setState({
                     model: res.data.lighthouseModel,
                     type: res.data.lighthouseType,
-                    productivity: res.data.productivity.OEE,
+                    productivity: res.data.productivity,
                     sustainability: res.data.sustainability,
                     agility: res.data.agility,
                     speedToMarket: res.data.speedToMarket,
@@ -193,10 +207,10 @@ class LighthouseDetails extends Component {
                     submitButton: 'Edit details',
                     project: res.data.projects,
                 });
-                if (res.data.owner !== undefined) {
+                if (res.data.company !== undefined) {
                     this.setState({
-                        companyId: res.data.owner.id,
-                        companyName: res.data.owner.companyName,
+                        companyId: res.data.company.id,
+                        companyName: res.data.company.companyName,
                     });
                 };
             })
@@ -210,13 +224,13 @@ class LighthouseDetails extends Component {
         });
     }
 
-    handleAddDetails() {
+    handleAddProject() {
         this.setState({
             model: '',
             type: '',
-            productivity: [],
-            sustainability: [],
-            agility: [],
+            productivity: '',
+            sustainability: '',
+            agility: '',
             speedToMarket: '',
             customization: '',
             others: '',
@@ -242,6 +256,8 @@ class LighthouseDetails extends Component {
                 })
             })
     };
+
+
 
     render() {
         const view = <Tooltip id="edit_tooltip">View</Tooltip>;
@@ -287,6 +303,28 @@ class LighthouseDetails extends Component {
             }
         }));
 
+        const model = [
+            {
+                value: '4 Walls',
+                label: '4 Walls'
+            },
+            {
+                value: 'End-to-End',
+                label: 'End-to-End'
+            }
+        ];
+
+        const type = [
+            {
+                value: 'Anchor',
+                label: 'Anchor'
+            },
+            {
+                value: 'Vendor',
+                label: 'Vendor'
+            }
+        ];
+
         return (
             <div className="content">
                 <Grid fluid>
@@ -296,22 +334,12 @@ class LighthouseDetails extends Component {
                                 title="Lighthouse Details"
                                 content={
                                     <div className={classes.root}>
-                                        <Button
-                                            color="primary"
-                                            variant="outlined"
-                                            className={classes.button}
-                                            onClick={() => this.handleAddDetails()}
-                                        >
-                                            <AddIcon /> &nbsp;
-                                            Add New Lighthouse Project
-                                        </Button>
                                         &nbsp;
                                         <Button
                                             color="primary"
                                             variant="outlined"
                                             className={classes.button}
                                             onClick={() => this.handleEdit()}
-                                            disabled={this.state.editDisabled}
                                         >
                                             <EditIcon /> &nbsp;
                                             Edit details
@@ -372,8 +400,15 @@ class LighthouseDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
+                                                select
                                                 disabled={this.state.disabled}
-                                            />
+                                            >
+                                                {model.map((option) => (
+                                                    <MenuItem key={option.value} value={option.value}>
+                                                        {option.label}
+                                                    </MenuItem>
+                                                ))}
+                                            </TextField>
 
                                             <TextField
                                                 onChange={(event) => this.handleChange(event)}
@@ -384,8 +419,15 @@ class LighthouseDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
+                                                select
                                                 disabled={this.state.disabled}
-                                            />
+                                            >
+                                                {type.map((option) => (
+                                                    <MenuItem key={option.value} value={option.value}>
+                                                        {option.label}
+                                                    </MenuItem>
+                                                ))}
+                                            </TextField>
 
                                             <TextField
                                                 onChange={(event) => this.handleChange(event)}
@@ -398,12 +440,6 @@ class LighthouseDetails extends Component {
                                                 fullWidth
                                                 disabled={this.state.disabled}
                                             />
-                                            {/* {source.map((option) => (
-                                                    <MenuItem key={option.value} value={option.value}>
-                                                        {option.label}
-                                                    </MenuItem>
-                                                ))}
-                                            </TextField> */}
 
                                             <TextField
                                                 onChange={(event) => this.handleChange(event)}
@@ -465,7 +501,7 @@ class LighthouseDetails extends Component {
                                                 disabled={this.state.disabled}
                                             />
 
-                                        &nbsp; <br />
+                                            &nbsp; <br />
                                             <Button
                                                 className={classes.button}
                                                 variant="outlined"
@@ -482,10 +518,22 @@ class LighthouseDetails extends Component {
                                                     this.state.customization,
                                                     this.state.others,
                                                 )}
+                                                disabled={this.state.disabled}
                                             >
-                                                {this.state.submitButton}
+                                                {/* {this.state.submitButton} */}
+                                                Submit
+                                                &nbsp;
+                                                <Done fontSize="small" style={{ color: green[500] }} />
+                                            </Button>
                                             &nbsp;
-                                            <Done fontSize="small" style={{ color: green[500] }} />
+                                            <Button
+                                                className={classes.button}
+                                                variant="outlined"
+                                                color="default"
+                                                onClick={() => this.setState({ disabled: true })}
+                                                disabled={this.state.disabled}
+                                            >
+                                                Cancel
                                             </Button>
                                         </form>
 
@@ -520,11 +568,114 @@ class LighthouseDetails extends Component {
                     <Row>
                         <Col md={12}>
                             <Card
+                                title="Star Ranking"
+                                content={
+                                    <div>
+                                        <p>Star ranking</p>
+                                        <TextField
+                                            onChange={(event) => this.handleChange(event)}
+                                            value={this.state.productivity}
+                                            label="Productivity "
+                                            name="productivity"
+                                            type="text"
+                                            variant="outlined"
+                                            style={{ margin: 8 }}
+                                            fullWidth
+                                            disabled={this.state.disabled}
+                                        />
+
+                                        <TextField
+                                            onChange={(event) => this.handleChange(event)}
+                                            value={this.state.sustainability}
+                                            label="Sustainability"
+                                            name="sustainability"
+                                            type="text"
+                                            variant="outlined"
+                                            style={{ margin: 8 }}
+                                            fullWidth
+                                            disabled={this.state.disabled}
+                                        />
+
+                                        <TextField
+                                            onChange={(event) => this.handleChange(event)}
+                                            value={this.state.agility}
+                                            label="Agility"
+                                            name="agility"
+                                            type="text"
+                                            variant="outlined"
+                                            style={{ margin: 8 }}
+                                            fullWidth
+                                            disabled={this.state.disabled}
+                                        />
+
+                                        <TextField
+                                            onChange={(event) => this.handleChange(event)}
+                                            value={this.state.speedToMarket}
+                                            label="Speed to Market"
+                                            name="speedToMarket"
+                                            type="text"
+                                            variant="outlined"
+                                            style={{ margin: 8 }}
+                                            fullWidth
+                                            disabled={this.state.disabled}
+                                        />
+
+                                        <TextField
+                                            onChange={(event) => this.handleChange(event)}
+                                            value={this.state.customization}
+                                            label="Customization"
+                                            name="customization"
+                                            type="text"
+                                            variant="outlined"
+                                            style={{ margin: 8 }}
+                                            fullWidth
+                                            disabled={this.state.disabled}
+                                        />
+
+                                        <TextField
+                                            onChange={(event) => this.handleChange(event)}
+                                            value={this.state.others}
+                                            label="Others"
+                                            name="others"
+                                            type="text"
+                                            variant="outlined"
+                                            style={{ margin: 8 }}
+                                            fullWidth
+                                            disabled={this.state.disabled}
+                                        />
+                                    </div>
+                                }
+                            />
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col md={12}>
+                            <Card
                                 title="List of Projects"
                                 ctTableFullWidth
                                 ctTableResponsive
                                 content={
                                     <div>
+                                        &nbsp;
+                                        &nbsp;
+                                        &nbsp;
+                                        &nbsp;
+                                        <Link to={{
+                                            pathname: `/admin/project-info/`
+                                        }}>
+                                            <Button
+                                                color="primary"
+                                                variant="outlined"
+                                                className={classes.button}
+                                                onClick={() => this.handleAddProject()}
+                                            >
+                                                <AddIcon /> &nbsp;
+                                                Add New Project
+                                            </Button>
+                                        </Link>
+
+                                        <br />
                                         <Table striped hover>
                                             <thead>
                                                 <tr>
@@ -543,9 +694,11 @@ class LighthouseDetails extends Component {
                                                             <td><center>{proj.duration}</center></td>
                                                             <td><center>RM {nFormatter(proj.totalCost)}</center></td>
                                                             <td><center>{proj.sourceOfTechnology}</center></td>
-                                                            {/* <td><center>{proj.detailsOfTechnology}</center></td> */}
-                                                            <td><center>{proj.facilitationNeeded}</center></td>
-                                                            {/* <td><center>Phase 1: {proj.phase.phase1}<br />Phase 2: {proj.phase.phase2}</center></td> */}
+                                                            {proj.vendor !== null ?
+                                                                <td><center>{getVendorCompany(proj.vendor)}</center></td>
+                                                                :
+                                                                <td><center>null</center></td>
+                                                            }
                                                             <td className="td-actions text-right"><center>
                                                                 <OverlayTrigger placement="top" overlay={view}>
                                                                     <Link to={{

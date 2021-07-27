@@ -19,26 +19,21 @@ import AdminDashboard from "views/Dashboard/AdminDashboard.jsx";
 import UserDashboard from "views/Dashboard/UserDashboard.jsx";
 
 import UserProfile from "views/UserProfile/UserProfile.jsx";
-// import TableList from "views/TableList.jsx";
-// import Typography from "views/Typography.jsx";
-// import Icons from "views/Icons.jsx";
-// import Maps from "views/Maps/Maps.jsx";
-// import Notifications from "views/Notifications.jsx";
 import CompanyList from 'views/Company/CompanyList';
-// import AdminProjectList from 'views/Project/AdminProjectList';
-// import UserProjectList from 'views/Project/UserProjectList';
 
 import CompanyDetails from 'views/Company/CompanyDetails';
 import ProjectDetails from 'views/Project/ProjectDetails';
 
 import AdminLighthouse from 'views/Lighthouse/AdminLighthouseProject';
 import UserLighthouse from 'views/Lighthouse/UserLighthouseProject';
+import UserAddLighthouse from 'views/Lighthouse/UserAddLighthouse';
 
-import LighthouseDetails from 'views/Lighthouse/LighthouseDetails';
+import AdminLighthouseDetails from 'views/Lighthouse/AdminLighthouseDetails';
 import UserLighthouseDetails from 'views/Lighthouse/UserLighthouseDetails';
 
 import Account from "views/Account/Account";
-
+import ProjectUpdate from "views/Project/ProjectUpdate";
+import AddProject from "views/Project/AddProject";
 
 const dashboardRoutes = [
   {
@@ -66,6 +61,14 @@ const dashboardRoutes = [
     invisible: true,
   },
   {
+    path: "/add-company",
+    name: "Company Details",
+    icon: "pe-7s-portfolio",
+    component: CompanyDetails,
+    layout: "/admin",
+    invisible: true,
+  },
+  {
     path: "/lighthouse",
     name: "Lighthouse",
     icon: "pe-7s-magic-wand",
@@ -77,18 +80,10 @@ const dashboardRoutes = [
     path: "/lighthouse-info/:lighthouseid",
     name: "Lighthouse Details",
     icon: "pe-7s-magic-wand",
-    component: LighthouseDetails,
+    component: AdminLighthouseDetails,
     layout: "/admin",
     invisible: true,
   },
-  // {
-  //   path: "/project",
-  //   name: "Projects",
-  //   icon: "pe-7s-note2",
-  //   component: AdminProjectList,
-  //   layout: "/admin",
-  //   invisible: false,
-  // },
   {
     path: "/project-info/:projectid",
     name: "Project Details",
@@ -97,7 +92,14 @@ const dashboardRoutes = [
     layout: "/admin",
     invisible: true,
   },
- 
+  {
+    path: "/project-update/:projectId",
+    name: "Projects",
+    icon: "pe-7s-server",
+    component: ProjectUpdate,
+    layout: "/admin",
+    invisible: true,
+  },
   {
     path: "/account",
     name: "Accounts",
@@ -138,19 +140,35 @@ const dashboardRoutes = [
     layout: "/user",
     invisible: true,
   },
-  // {
-  //   path: "/project",
-  //   name: "Projects",
-  //   icon: "pe-7s-server",
-  //   component: UserProjectList,
-  //   layout: "/user",
-  //   invisible: false,
-  // },
+  {
+    path: "/add-lighthouse/:companyId",
+    name: "Add New Lighthouse",
+    icon: "pe-7s-magic-wand",
+    component: UserAddLighthouse,
+    layout: "/user",
+    invisible: true,
+  },
+  {
+    path: "/project-update/:projectId",
+    name: "Projects",
+    icon: "pe-7s-server",
+    component: ProjectUpdate,
+    layout: "/user",
+    invisible: true,
+  },
   {
     path: "/project-info/:projectid",
     name: "Project Details",
     icon: "pe-7s-note2",
     component: ProjectDetails,
+    layout: "/user",
+    invisible: true,
+  },
+  {
+    path: "/add-project/:lighthouseid",
+    name: "Add Project",
+    icon: "pe-7s-note2",
+    component: AddProject,
     layout: "/user",
     invisible: true,
   },
@@ -162,48 +180,6 @@ const dashboardRoutes = [
     layout: "/user",
     invisible: false,
   },
-  // {
-  //   path: "login",
-  //   name: "Login",
-  //   icon: "pe-7s-science",
-  //   component: LoginPage,
-  //   layout: "/"
-  // },
-  // {
-  //   path: "register",
-  //   name: "Register",
-  //   icon: "pe-7s-science",
-  //   component: LoginPage,
-  //   layout: "/"
-  // },
-  // {
-  //   path: "/notifications",
-  //   name: "Notifications",
-  //   icon: "pe-7s-bell",
-  //   component: Notifications,
-  //   layout: "/admin"
-  // },
-  // {
-  //   path: "/typography",
-  //   name: "Typography",
-  //   icon: "pe-7s-news-paper",
-  //   component: Typography,
-  //   layout: "/admin"
-  // },
-  // {
-  //   path: "/icons",
-  //   name: "Icons",
-  //   icon: "pe-7s-science",
-  //   component: Icons,
-  //   layout: "/admin"
-  // },
-  // {
-  //   path: "/maps",
-  //   name: "Maps",
-  //   icon: "pe-7s-map-marker",
-  //   component: Maps,
-  //   layout: "/admin"
-  // },
 ];
 
 export default dashboardRoutes;

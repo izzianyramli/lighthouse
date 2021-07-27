@@ -31,6 +31,7 @@ import {
     CancelOutlined,
     CheckCircleOutlineOutlined,
     Home,
+    Add as AddIcon,
 } from '@material-ui/icons';
 
 const companyInfo = [
@@ -56,8 +57,8 @@ const division = [
         label: 'None'
     },
     {
-        value: 'Advanced Technology and Research & Development',
-        label: 'Advanced Technology and Research & Development'
+        value: 'Advanced Technology and Research Development',
+        label: 'Advanced Technology and Research Development'
     },
     {
         value: 'Building Technology and Lifestyle',
@@ -131,6 +132,12 @@ class CompanyList extends Component {
         this.fetchCompanyData();
     };
 
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.companyDivision !== prevState.companyDivision) {
+            this.fetchCompanyData();
+        }
+    }
+
     fetchCompanyData() {
         if (this.state.companyDivision !== null) {
             axios.get(`/company?industryDivision=${this.state.companyDivision}`)
@@ -187,7 +194,6 @@ class CompanyList extends Component {
     };
 
     handleChange(event) {
-        event.preventDefault();
         this.setState({ companyDivision: event.target.value, });
         this.fetchCompanyData();
     }
@@ -261,20 +267,18 @@ class CompanyList extends Component {
                                                         <MenuItem value={option.value}>{option.label}</MenuItem>
                                                     ))}
                                                 </Select>
-
                                             </BreadcrumbItem>
                                         </Breadcrumb>
 
-                                        <Button
-                                            onClick={() => console.log('goto add company form')}
-                                            pullRight
-                                            variant="outline-primary"
-                                        // style={{ color: blue[500] }}
-                                        // className={classes.button}
+                                        <Link to={{
+                                            pathname: '/admin/add-company',
+                                        }}
                                         >
-                                            Add new company
-                                        </Button>
-
+                                            <Button bsStyle="primary" ouline type="button" bsSize="small" pullRight>
+                                                <AddIcon /> &nbsp;
+                                                Add New Company
+                                            </Button>
+                                        </Link>
                                         <br />
                                         <Table striped hover>
                                             <thead>
@@ -292,23 +296,11 @@ class CompanyList extends Component {
                                                         <tr key={key}>
                                                             <td><center>{key + 1}.</center></td>
                                                             <td><center>{comp.companyName}</center></td>
-                                                            {/* <td><center>{comp.registrationNumber}</center></td> */}
-                                                            {/* <td><center>{comp.contactPerson}</center></td> */}
-                                                            {/* <td><center>{comp.designation}</center></td> */}
-                                                            {/* <td><center>{comp.contactNumber}</center></td> */}
-                                                            {/* <td><center>{comp.email}</center></td> */}
                                                             <td><center>{comp.location}</center></td>
                                                             <td><center>{comp.typeCompany}</center></td>
-                                                            {/* <td><center>{comp.productActivity}</center></td> */}
                                                             <td><center>{comp.industryDivision}</center></td>
-                                                            {/* {comp.lighthouseDetails[0] !== undefined ?
-                                                                <td><center>Model: {comp.lighthouseDetails[0].lighthouseModel} ({comp.lighthouseDetails[0].lighthouseType})</center></td>
-                                                                :
-                                                                <td><center>{'null'}</center></td>
-                                                            } */}
                                                             <td><center>{comp.status}</center></td>
                                                             <td><center>{comp.lighthouseDetails.length}</center></td>
-                                                            {/* <td><center>{comp.projects.length}</center></td> */}
                                                             <td className="td-actions text-right"><center>
                                                                 <OverlayTrigger placement="top" overlay={view}>
                                                                     <Link to={{

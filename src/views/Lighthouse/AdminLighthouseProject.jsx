@@ -140,8 +140,8 @@ class AdminLighthouse extends Component {
                                                     return (
                                                         <tr key={key}>
                                                             <td><center>{key + 1}.</center></td>
-                                                            {lighthouse.owner !== null ?
-                                                                <td><center>{lighthouse.owner.companyName}</center></td>
+                                                            {lighthouse.company !== null ?
+                                                                <td><center>{lighthouse.company.companyName}</center></td>
                                                                 :
                                                                 <td><center>null</center></td>
                                                             }

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Grid, Row, Col, Table, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Grid, Row, Col, Table, OverlayTrigger, Tooltip, Modal } from 'react-bootstrap';
+// import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import Card from 'components/Card/Card';
 import axios from 'axios';
 import Button from "components/CustomButton/CustomButton";
-import { Dialog, DialogContent, DialogContentText, makeStyles } from '@material-ui/core';
+import { Dialog, DialogContent, DialogContentText, makeStyles, TextField, MenuItem } from '@material-ui/core';
 import { green, red } from '@material-ui/core/colors';
 import { CancelOutlined, CheckCircleOutlineOutlined } from '@material-ui/icons';
 
@@ -11,9 +12,10 @@ const accountInfo = [
     "First Name",
     "Last Name",
     "Company",
-    "Division",
+    // "Division",
     "Email",
     "Approval",
+    "Access Type"
 ];
 
 class Account extends Component {
@@ -21,6 +23,7 @@ class Account extends Component {
         super(props);
         this.state = {
             account: [],
+            accountId: '',
             firstName: '',
             lastName: '',
             companyName: '',
@@ -28,9 +31,11 @@ class Account extends Component {
             email: '',
             policy: null,
             approval: false,
+            accountType: '',
             openDialog: false,
             dialogMessage: '',
             dialogColor: null,
+            showEditModal: false,
         };
     };
 
@@ -46,6 +51,14 @@ class Account extends Component {
         this.setState({ openDialog: false });
     }
 
+    handleChange(event) {
+        this.setState({
+            [event.target.name]: event.target.value,
+        });
+    };
+
+    toggleModal = () => this.setState({ showEditModal: false });
+
     fetchUser() {
         axios.get('/Account')
             .then(res => {
@@ -54,6 +67,30 @@ class Account extends Component {
                 });
             })
             .catch(err => console.log('Failed to fetch account data, ', err));
+    }
+
+    updateAccount(userId, userApproval, userType) {
+        console.log(userId, userApproval, userType);
+        const payload = {
+            approval: userApproval,
+            accountType: userType
+        }
+        axios.patch(`/Account/${userId}`, payload)
+            .then(() => {
+                this.setState({
+                    openDialog: true,
+                    dialogMessage: 'User account updated',
+                    dialogColor: green[500],
+                    showEditModal: false,
+                });
+            })
+            .catch(() => {
+                this.setState({
+                    openDialog: true,
+                    dialogMessage: 'Failed to update user account',
+                    dialogColor: red[500],
+                })
+            })
     }
 
     deleteUser(userId) {
@@ -74,8 +111,14 @@ class Account extends Component {
             })
     };
 
+    Capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+
     render() {
         const remove = <Tooltip id="remove_tooltip">Delete</Tooltip>;
+        const view = <Tooltip id="edit_tooltip">View</Tooltip>;
         const classes = makeStyles((theme) => ({
             textField: {
                 marginLeft: theme.spacing(1),
@@ -110,8 +153,31 @@ class Account extends Component {
             },
         }));
 
+        const approvalStatus = [
+            {
+                value: true,
+                label: "Approved"
+            },
+            {
+                value: false,
+                label: "Pending"
+            }
+        ];
+
+        const typeAccount = [
+            {
+                value: "admin",
+                label: "Admin"
+            },
+            {
+                value: "user",
+                label: "User"
+            }
+        ];
+
+
         return (
-            <div className="content">
+            <div className="content" style={{ backgroundColor: "#FFFFFF" }}>
                 <Grid fluid>
                     <Row>
                         <Col>
@@ -139,10 +205,28 @@ class Account extends Component {
                                                             <td><center>{acc.firstName}</center></td>
                                                             <td><center>{acc.lastName}</center></td>
                                                             <td><center>{acc.companyName}</center></td>
-                                                            <td><center>{acc.division}</center></td>
+                                                            {/* <td><center>{acc.division}</center></td> */}
                                                             <td><center>{acc.email}</center></td>
-                                                            <td><center>{acc.approval ? "true" : "false" }</center></td>
+                                                            <td><center>{acc.approval ? "Approved" : "Pending"}</center></td>
+                                                            <td><center>{this.Capitalize(acc.accountType)}</center></td>
                                                             <td className="td-actions text-right"><center>
+                                                                <OverlayTrigger placement="top" overlay={view}>
+                                                                    <Button bsStyle="info" simple type="button" bsSize="large" onClick={() => this.setState({
+                                                                        showEditModal: true,
+                                                                        accountId: acc.id,
+                                                                        firstName: acc.firstName,
+                                                                        lastName: acc.lastName,
+                                                                        companyName: acc.companyName,
+                                                                        division: acc.division,
+                                                                        email: acc.email,
+                                                                        approval: acc.approval,
+                                                                        accountType: acc.accountType
+                                                                    })}>
+                                                                        <i className="fa fa-external-link" />
+                                                                    </Button>
+                                                                </OverlayTrigger>
+                                                                &nbsp;
+                                                                &nbsp;
                                                                 <OverlayTrigger placement="top" overlay={remove}>
                                                                     <Button bsStyle="danger" simple type="button" bsSize="large" onClick={() => this.deleteUser(acc.id)}>
                                                                         <i className="fa fa-trash-o" />
@@ -154,6 +238,121 @@ class Account extends Component {
                                                 })}
                                             </tbody>
                                         </Table>
+
+                                        <Modal show={this.state.showEditModal} handleClose={this.toggleModal}>
+                                            <Modal.Header closeButton>Edit account</Modal.Header>
+                                            <Modal.Body>
+                                                <form
+                                                    className={classes.textField}
+                                                    noValidate
+                                                    autoComplete='off'
+                                                >
+                                                    <TextField
+                                                        onChange={(event) => this.handleChange(event)}
+                                                        value={this.state.firstName}
+                                                        label="First name"
+                                                        name="firstName"
+                                                        type="text"
+                                                        variant="outlined"
+                                                        style={{ margin: 8 }}
+                                                        fullWidth
+                                                        disabled={true}
+                                                    />
+                                                    <TextField
+                                                        onChange={(event) => this.handleChange(event)}
+                                                        value={this.state.lastName}
+                                                        label="Last name"
+                                                        name="lastName"
+                                                        type="text"
+                                                        variant="outlined"
+                                                        style={{ margin: 8 }}
+                                                        fullWidth
+                                                        disabled={true}
+                                                    />
+                                                    <TextField
+                                                        onChange={(event) => this.handleChange(event)}
+                                                        value={this.state.companyName}
+                                                        label="Company"
+                                                        name="companyName"
+                                                        type="text"
+                                                        variant="outlined"
+                                                        style={{ margin: 8 }}
+                                                        fullWidth
+                                                        disabled={true}
+                                                    />
+                                                    <TextField
+                                                        onChange={(event) => this.handleChange(event)}
+                                                        value={this.state.division}
+                                                        label="Division"
+                                                        name="division"
+                                                        type="text"
+                                                        variant="outlined"
+                                                        style={{ margin: 8 }}
+                                                        fullWidth
+                                                        disabled={true}
+                                                    />
+                                                    <TextField
+                                                        onChange={(event) => this.handleChange(event)}
+                                                        value={this.state.email}
+                                                        label="Email address"
+                                                        name="email"
+                                                        type="text"
+                                                        variant="outlined"
+                                                        style={{ margin: 8 }}
+                                                        fullWidth
+                                                        disabled={true}
+                                                    />
+                                                    <TextField
+                                                        onChange={(event) => this.handleChange(event)}
+                                                        value={this.state.approval}
+                                                        label="Approval status"
+                                                        name="approval"
+                                                        type="text"
+                                                        variant="outlined"
+                                                        style={{ margin: 8 }}
+                                                        fullWidth
+                                                        select
+                                                    >
+                                                        {approvalStatus.map((option) => (
+                                                            <MenuItem key={option.value} value={option.value}>
+                                                                {option.label}
+                                                            </MenuItem>
+                                                        ))}
+                                                    </TextField>
+                                                    <TextField
+                                                        onChange={(event) => this.handleChange(event)}
+                                                        value={this.state.accountType}
+                                                        label="Account type"
+                                                        name="accountType"
+                                                        type="text"
+                                                        variant="outlined"
+                                                        style={{ margin: 8 }}
+                                                        fullWidth
+                                                        select
+                                                    >
+                                                        {typeAccount.map((option) => (
+                                                            <MenuItem key={option.value} value={option.value}>
+                                                                {option.label}
+                                                            </MenuItem>
+                                                        ))}
+                                                    </TextField>
+                                                </form>
+                                            </Modal.Body>
+                                            <Modal.Footer>
+                                                <Button bsStyle="warning" simple type="button" onClick={this.toggleModal}>
+                                                    Cancel
+                                                </Button>
+                                                <Button bsStyle="success" simple type="button"
+                                                    onClick={(event) => {
+                                                        event.preventDefault();
+                                                        this.updateAccount(this.state.accountId, this.state.approval, this.state.accountType);
+                                                    }}
+                                                >
+                                                    Save
+                                                </Button>
+                                            </Modal.Footer>
+                                        </Modal>
+
                                         <Dialog
                                             open={this.state.openDialog}
                                             onBackdropClick={this.handleCloseDialog}

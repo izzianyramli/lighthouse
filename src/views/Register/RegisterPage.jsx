@@ -14,7 +14,7 @@ import {
     withRouter
 } from 'react-router-dom';
 import axios from 'axios';
-
+import { MenuItem, TextField } from '@material-ui/core';
 class RegisterPage extends Component {
     constructor(props) {
         super(props);
@@ -26,7 +26,13 @@ class RegisterPage extends Component {
             email: '',
             password: '',
             policy: false,
+            companyList: []
         }
+        this.getCompanyRegistered = this.getCompanyRegistered.bind(this);
+    }
+
+    componentDidMount() {
+        this.getCompanyRegistered();
     }
 
     gotoRegisterSuccess(path) {
@@ -67,7 +73,18 @@ class RegisterPage extends Component {
             .catch(err => console.log('registration failed, err: ', err));
     };
 
+    getCompanyRegistered() {
+        axios.get('/Company')
+            .then((res) => {
+                this.setState({ companyList: res.data });
+            })
+            .catch(() => console.log('unable to fetch company'))
+    }
+
     render() {
+        const { companyList } = this.state;
+
+
         return (
             <div className="content">
                 <Grid fluid>
@@ -130,6 +147,21 @@ class RegisterPage extends Component {
                                                     },
                                                 ]}
                                             />
+                                            <TextField
+                                                label="Company Name"
+                                                value={this.state.companyName}
+                                                type="text"
+                                                name="companyName"
+                                                onChange={(event) => this.handleChange(event)}
+                                                variant="outlined"
+                                                select
+                                            >
+                                                {companyList.map((option) => (
+                                                    <MenuItem key={option.id} value={option.companyName}>
+                                                        {option.companyName}
+                                                    </MenuItem>
+                                                ))}
+                                            </TextField>
                                             <h4><b>Account information</b></h4>
                                             <FormInputs
                                                 ncols={["col-md-6", "col-md-3", "col-md-3"]}
@@ -161,6 +193,7 @@ class RegisterPage extends Component {
                                             />
                                             <CustomCheckbox
                                                 isChecked={this.state.policy}
+                                                value={this.state.policy}
                                                 name="policy"
                                                 number={1}
                                                 label={`I have read and agree with the Terms and Conditions`}

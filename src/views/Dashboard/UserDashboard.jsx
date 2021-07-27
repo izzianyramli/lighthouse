@@ -4,6 +4,7 @@ import { Card } from "components/Card/Card.jsx";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
 import { Tasks } from "components/Tasks/Tasks.jsx";
 import axios from 'axios';
+import UserLighthouse from "views/Lighthouse/UserLighthouseProject";
 
 const date = new Date();
 
@@ -15,7 +16,11 @@ class UserDashboard extends Component {
       project: [],
       lighthouse: [],
       timePassed: '',
+      userProfile: [],
     };
+    this.fetchUserData = this.fetchUserData.bind(this);
+    this.fetchCompanyData = this.fetchCompanyData.bind(this);
+    this.fetchLighthouseProjects = this.fetchLighthouseProjects.bind(this);
   };
 
   createLegend(json) {
@@ -30,11 +35,11 @@ class UserDashboard extends Component {
   }
 
   componentDidMount() {
-    this.fetchCompanyData();
-    this.fetchLighthouseData();
     this.interval = setInterval(() => {
       this.humanizeDateTime();
     }, 2000);
+    const userId = localStorage.getItem("userId");
+    this.fetchUserData(userId);
   };
 
   componentWillUnmount() {
@@ -42,30 +47,37 @@ class UserDashboard extends Component {
     this.interval = null;
   }
 
-  fetchCompanyData() {
-    axios.get('/Company/602f0b2b2d925c5ba0817c7d')
+  fetchUserData(user) {
+    axios.get(`/Account/${user}`)
+      .then((res) => {
+        this.setState({ userProfile: res.data });
+        this.fetchCompanyData(res.data.companyName);
+      })
+  }
+
+  fetchCompanyData(companyName) {
+    axios.get(`/Company/?companyName=${companyName}`)
       .then(res => {
         this.setState({
-          company: res.data,
-          lighthouse: res.data.lighthouseDetails
+          company: res.data[0],
+          lighthouse: res.data[0].lighthouseDetails
         });
+        if (res.data[0].lighthouseDetails !== undefined) {
+          this.fetchLighthouseProjects(res.data[0].lighthouseDetails[0].id);
+        } else {
+          this.fetchLighthouseProjects(null);
+        }
       })
       .catch(err => console.log('Error fetching company data: ', err));
   };
 
-  fetchLighthouseData() {
-    axios.get('/Lighthouse')
-      .then(res => {
-        for (const [, value] of Object.entries(res.data)) {
-          if (value.owner === "602f0b2b2d925c5ba0817c7d") {
-            this.setState({ project: value.projects });
-          }
-        }
-      })
-  }
-
-  fetchProjectData() {
-    axios.get('/')
+  fetchLighthouseProjects(lighthouseId) {
+    if (lighthouseId !== undefined) {
+      axios.get(`/Lighthouse/${lighthouseId}`)
+        .then(res => {
+          this.setState({ project: res.data.projects });
+        })
+    }
   }
 
   currencyFormat(num) {
@@ -84,13 +96,17 @@ class UserDashboard extends Component {
   }
 
   render() {
-    var { project, company } = this.state;
+    var { project, userProfile } = this.state;
     var projectCost = 0;
+    var projectUpdates = 0;
     var i;
     if (project !== undefined) {
       for (i = 0; i <= project.length - 1; i++) {
         if (project[i].totalCost !== undefined) {
           projectCost += project[i].totalCost
+        };
+        if (project[i].projectUpdate !== undefined) {
+          projectUpdates += project[i].projectUpdate.length
         };
       }
     };
@@ -103,19 +119,20 @@ class UserDashboard extends Component {
           <Row>
             <Col>
               <div className="typo-line">
+                <h3>Hello, {userProfile.firstName} {userProfile.lastName}</h3>
                 <h2><b>
-                  {company.companyName}
+                  {userProfile.companyName}
                 </b></h2>
               </div>
             </Col>
           </Row>
           <Row>
             <Col lg={3} sm={6}>
-              {this.state.project !== undefined ?
+              {project !== undefined ?
                 <StatsCard
                   bigIcon={<i className="pe-7s-server text-info" />}
                   statsText="Projects"
-                  statsValue={this.state.project.length}
+                  statsValue={project.length}
                   statsIcon={<i className="fa fa-refresh" />}
                   statsIconText={timePassed}
                 />
@@ -131,14 +148,24 @@ class UserDashboard extends Component {
 
             </Col>
             <Col lg={4} sm={6}>
+              {/* {project.projectUpdate !== undefined ? */}
               <StatsCard
                 bigIcon={<i className="pe-7s-check text-success"></i>
                 }
                 statsText="Progress tasks"
-                statsValue={this.state.company.length}
+                statsValue={projectUpdates}
                 statsIcon={<i className="fa fa-refresh" />}
                 statsIconText={timePassed}
               />
+              {/* :
+                <StatsCard
+                  bigIcon={<i className="pe-7s-check text-success" />}
+                  statsText="Progress Tasks"
+                  statsValue="0"
+                  statsIcon={<i className="fa fa-refresh" />}
+                  statsIconText={timePassed}
+                /> */}
+              {/* } */}
             </Col>
             <Col lg={5} sm={6}>
               <StatsCard
@@ -150,7 +177,8 @@ class UserDashboard extends Component {
               />
             </Col>
           </Row>
-          <Row>
+          <UserLighthouse />
+          {/* <Row>
             <Col>
               <Card
                 title="Companies involved"
@@ -164,9 +192,8 @@ class UserDashboard extends Component {
                   </div>
                 }
               />
-
             </Col>
-          </Row>
+          </Row> */}
         </Grid>
       </div >
     );

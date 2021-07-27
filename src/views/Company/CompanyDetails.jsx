@@ -18,7 +18,7 @@ import {
 } from '@material-ui/core';
 import axios from 'axios';
 import { green, red } from '@material-ui/core/colors';
-import { Done, CancelOutlined, CheckCircleOutlineOutlined, Add as AddIcon, Edit as EditIcon } from '@material-ui/icons';
+import { Done, CancelOutlined, CheckCircleOutlineOutlined, Edit as EditIcon } from '@material-ui/icons';
 
 class CompanyDetails extends Component {
     constructor(props) {
@@ -43,7 +43,6 @@ class CompanyDetails extends Component {
             submitButton: 'Submit',
             companyId: Object.values(props.match.params)[0],
             disabled: true,
-            editDisabled: true,
         };
         this.handleCompanyData = this.handleCompanyData.bind(this);
     };
@@ -95,9 +94,10 @@ class CompanyDetails extends Component {
             status: status,
             engagementStatus: engagementStatus
         };
-        if (this.state.submitButton === 'Submit') {
+        // if (this.state.submitButton === 'Submit') {
+        if (this.state.companyId === undefined) {
             axios.post('/Company', payload)
-                .then((res) => {
+                .then(() => {
                     this.setState({
                         companyName: '',
                         registrationNumber: '',
@@ -117,7 +117,7 @@ class CompanyDetails extends Component {
                         submitButton: 'Submit'
                     })
                 })
-                .catch((err) => {
+                .catch(() => {
                     this.setState({
                         openDialog: true,
                         dialogMessage: 'Company details failed to update',
@@ -127,7 +127,7 @@ class CompanyDetails extends Component {
                 })
         } else if (this.state.submitButton === 'Edit details') {
             axios.patch(`/Company/${this.state.companyId}`, payload)
-                .then((res) => {
+                .then(() => {
                     this.setState({
                         companyName: '',
                         registrationNumber: '',
@@ -147,7 +147,7 @@ class CompanyDetails extends Component {
                         submitButton: 'Submit'
                     })
                 })
-                .catch((err) => {
+                .catch(() => {
                     this.setState({
                         openDialog: true,
                         dialogMessage: 'Company details failed to update',
@@ -156,7 +156,6 @@ class CompanyDetails extends Component {
                     })
                 })
         }
-
     }
 
     handleCompanyData() {
@@ -179,7 +178,6 @@ class CompanyDetails extends Component {
                 });
             })
             .catch(err => console.log('error company data: ', err))
-        // };
     }
 
     handleEdit() {
@@ -209,7 +207,6 @@ class CompanyDetails extends Component {
     }
 
     render() {
-
         const classes = makeStyles((theme) => ({
             textField: {
                 marginLeft: theme.spacing(1),
@@ -334,22 +331,12 @@ class CompanyDetails extends Component {
                                 title="Company Details"
                                 content={
                                     <div className={classes.root}>
-                                        <Button
-                                            color="primary"
-                                            variant="outlined"
-                                            className={classes.button}
-                                            onClick={() => this.handleAddDetails()}
-                                        >
-                                            <AddIcon /> &nbsp;
-                                            Add New Company
-                                        </Button>
                                         &nbsp;
                                         <Button
                                             color="primary"
                                             variant="outlined"
                                             className={classes.button}
                                             onClick={() => this.handleEdit()}
-                                            disabled={this.state.editDisabled}
                                         >
                                             <EditIcon /> &nbsp;
                                             Edit details
@@ -571,10 +558,21 @@ class CompanyDetails extends Component {
                                                 this.state.status,
                                                 this.state.engagementStatus
                                             )}
+                                            disabled={this.state.disabled}
                                         >
-                                            {this.state.submitButton}
+                                            {/* {this.state.submitButton} */}
+                                            Submit
                                             &nbsp;
                                             <Done fontSize="small" style={{ color: green[500] }} />
+                                        </Button>
+                                        &nbsp;
+                                        <Button
+                                            className={classes.button}
+                                            variant="outlined"
+                                            color="default"
+                                            onClick={() => this.setState({ disabled: true })}
+                                        >
+                                            Cancel
                                         </Button>
                                         <Dialog
                                             open={this.state.openDialog}

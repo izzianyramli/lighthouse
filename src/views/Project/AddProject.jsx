@@ -55,16 +55,18 @@ class ProjectDetails extends Component {
             dialogMessage: '',
             color: null,
             submitButton: 'Submit',
-            projectId: Object.values(props.match.params)[0],
-            disabled: true,
+            lighthouseId: Object.values(props.match.params)[0],
+            disabled: false,
             editDisabled: false,
             projectUpdates: [],
         };
-        this.handleProjectData = this.handleProjectData.bind(this);
+        // this.handleProjectData = this.handleProjectData.bind(this);
+        this.handleLighthouseData = this.handleLighthouseData.bind(this);
     };
 
     componentDidMount() {
-        this.handleProjectData();
+        // this.handleProjectData();
+        this.handleLighthouseData();
     }
 
     handleCloseDialog = (event, reason) => {
@@ -82,7 +84,7 @@ class ProjectDetails extends Component {
 
     handleSubmit(
         event,
-        companyId,
+        lighthouseId,
         duration,
         totalCost,
         sourceOfTechnology,
@@ -92,7 +94,7 @@ class ProjectDetails extends Component {
     ) {
         event.preventDefault();
         const payload = {
-            owner: companyId,
+            lighthouse: lighthouseId,
             duration: duration,
             totalCost: totalCost,
             sourceOfTechnology: sourceOfTechnology,
@@ -124,51 +126,17 @@ class ProjectDetails extends Component {
                         submitButton: 'Submit'
                     })
                 })
-        } else if (this.state.submitButton === 'Edit') {
-            axios.patch(`/Project/${this.state.projectId}`, payload)
-                .then(() => {
-                    this.setState({
-                        duration: '',
-                        totalCost: '',
-                        sourceOfTechnology: '',
-                        detailsOfTechnology: '',
-                        facilitationNeeded: '',
-                        phase: [],
-                        openDialog: true,
-                        dialogMessage: 'Project details edited',
-                        color: green[500],
-                        submitButton: 'Submit'
-                    })
-                })
-                .catch(() => {
-                    this.setState({
-                        openDialog: true,
-                        dialogMessage: 'Project details failed to update',
-                        color: red[500],
-                        submitButton: 'Edit'
-                    })
-                })
         }
     }
 
-    handleProjectData() {
-        axios.get(`/Project/${this.state.projectId}`)
-            .then(res => {
-                console.log(res.data);
+    handleLighthouseData() {
+        axios.get(`/Lighthouse/${this.state.lighthouseId}`)
+            .then((res) => {
                 this.setState({
-                    companyId: res.data.lighthouse.owner,
-                    // companyName: red.data.owner.companyName,
-                    duration: res.data.duration,
-                    totalCost: res.data.totalCost,
-                    sourceOfTechnology: res.data.sourceOfTechnology,
-                    detailsOfTechnology: res.data.detailsOfTechnology,
-                    facilitationNeeded: res.data.facilitationNeeded,
-                    submitButton: 'Edit details',
-                    projectUpdates: res.data.projectUpdate
-                });
+                    companyId: res.data.company.id,
+                    companyName: res.data.company.companyName,
+                })
             })
-            .catch(err => console.log('error project data: ', err))
-        // };
     }
 
     handleEdit() {
@@ -192,8 +160,6 @@ class ProjectDetails extends Component {
     }
 
     render() {
-        const view = <Tooltip id="edit_tooltip">View</Tooltip>;
-        const remove = <Tooltip id="remove_tooltip">Delete</Tooltip>;
         const classes = makeStyles((theme) => ({
             textField: {
                 marginLeft: theme.spacing(1),
@@ -299,43 +265,11 @@ class ProjectDetails extends Component {
                     <Row>
                         <Col md={12}>
                             <Card
-                                title="Project Details"
+                                title="Add new project"
                                 content={
                                     <div className={classes.root}>
-                                        {/* <Button
-                                            color="primary"
-                                            variant="outlined"
-                                            className={classes.button}
-                                            onClick={() => this.handleAddDetails()}
-                                        >
-                                            <AddIcon /> &nbsp;
-                                            Add New Project
-                                        </Button> */}
                                         &nbsp;
-                                        <Button
-                                            color="primary"
-                                            variant="outlined"
-                                            className={classes.button}
-                                            onClick={() => this.handleEdit()}
-                                            disabled={this.state.editDisabled}
-                                        >
-                                            <EditIcon /> &nbsp;
-                                            Edit details
-                                        </Button>
                                         &nbsp;
-                                        <Link to={{
-                                            pathname: `/user/project-update/${this.state.projectId}`
-                                        }}>
-                                            <Button
-                                                color="primary"
-                                                variant="outlined"
-                                                className={classes.button}
-                                            >
-                                                <AddIcon /> &nbsp;
-                                                Add Project Updates
-                                            </Button>
-                                        </Link>
-
                                         &nbsp; <br />
                                         <form
                                             className={classes.textField}
@@ -484,7 +418,7 @@ class ProjectDetails extends Component {
                                             color="default"
                                             onClick={(event) => this.handleSubmit(
                                                 event,
-                                                this.state.companyId,
+                                                this.state.lighthouseId,
                                                 this.state.duration,
                                                 this.state.totalCost,
                                                 this.state.sourceOfTechnology,
@@ -513,83 +447,6 @@ class ProjectDetails extends Component {
                                                         :
                                                         <div>
                                                             <CancelOutlined className="fa" style={{ color: this.state.color, fontSize: 60 }} />
-                                                        </div>
-                                                    }
-                                                    <DialogContentText id="alert-dialog-description">
-                                                        {this.state.dialogMessage}
-                                                    </DialogContentText>
-                                                </center>
-                                            </DialogContent>
-                                        </Dialog>
-                                    </div>
-                                }
-                            />
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        <Col md={12}>
-                            <Card
-                                title="Project Updates"
-                                ctTableFullWidth
-                                ctTableResponsive
-                                content={
-                                    <div>
-                                        <Table striped hover>
-                                            <thead>
-                                                <tr>
-                                                    <th><center><b>No.</b></center></th>
-                                                    {projectUpdates.map((info, key) => {
-                                                        return <th key={key}><center><b>{info}</b></center></th>
-                                                    })}
-                                                    <th><center><b>Actions</b></center></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {this.state.projectUpdates && this.state.projectUpdates.map((proj, key) => {
-                                                    return (
-                                                        <tr key={key}>
-                                                            <td><center>{key + 1}.</center></td>
-                                                            <td><center>{proj.date}</center></td>
-                                                            <td><center>{proj.checklists}</center></td>
-                                                            <td><center>{proj.achievements}</center></td>
-                                                            <td><center>{proj.problems}</center></td>
-                                                            <td className="td-actions text-right"><center>
-                                                                <OverlayTrigger placement="top" overlay={view}>
-                                                                    <Link to={{
-                                                                        pathname: `/admin/project-update/${proj.id}`,
-                                                                    }}
-                                                                    >
-                                                                        <Button bsStyle="info" simple type="button" bsSize="large">
-                                                                            <i className="fa fa-external-link" />
-                                                                        </Button>
-                                                                    </Link>
-                                                                </OverlayTrigger>
-                                                                <OverlayTrigger placement="top" overlay={remove}>
-                                                                    <Button bsStyle="danger" simple type="button" bsSize="large" onClick={() => this.deleteProject(proj.id)}>
-                                                                        <i className="fa fa-trash-o" />
-                                                                    </Button>
-                                                                </OverlayTrigger>
-                                                            </center></td>
-                                                        </tr>
-                                                    )
-                                                })}
-                                            </tbody>
-                                        </Table>
-                                        <Dialog
-                                            open={this.state.openDialog}
-                                            onBackdropClick={this.handleCloseDialog}
-                                            aria-describedby="alert-dialog-description"
-                                        >
-                                            <DialogContent>
-                                                <center>
-                                                    {this.state.dialogColor === green[500] ?
-                                                        <div className={classes.root}>
-                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: this.state.dialogColor, fontSize: 60 }} />
-                                                        </div>
-                                                        :
-                                                        <div>
-                                                            <CancelOutlined className="fa" style={{ color: this.state.dialogColor, fontSize: 60 }} />
                                                         </div>
                                                     }
                                                     <DialogContentText id="alert-dialog-description">

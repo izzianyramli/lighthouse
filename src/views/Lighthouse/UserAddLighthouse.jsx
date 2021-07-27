@@ -24,8 +24,6 @@ import {
     Done,
     CancelOutlined,
     CheckCircleOutlineOutlined,
-    Add as AddIcon,
-    Edit as EditIcon,
 } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 
@@ -35,8 +33,6 @@ const projectInfo = [
     "Source of Technology",
     "Vendor",
 ];
-
-// const lighthouseId = Object.values(props.match.params)[0];
 
 function nFormatter(num) {
     if (num >= 1000000000000) {
@@ -54,12 +50,11 @@ function nFormatter(num) {
     return num;
 };
 
-class UserLighthouseDetails extends Component {
+class UserAddLighthouseDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            lighthouseId: Object.values(props.match.params)[0],
-            companyId: '',
+            companyId: Object.values(props.match.params)[0],
             companyName: '',
             model: '',
             type: '',
@@ -73,15 +68,13 @@ class UserLighthouseDetails extends Component {
             dialogMessage: '',
             color: null,
             submitButton: 'Submit',
-            disabled: true,
+            disabled: false,
             editDisabled: false,
             project: [],
         };
-        this.handleLighthouseData = this.handleLighthouseData.bind(this);
     };
 
     componentDidMount() {
-        this.handleLighthouseData();
         const userId = localStorage.getItem("userId");
         this.fetchUserData(userId);
     }
@@ -144,92 +137,48 @@ class UserLighthouseDetails extends Component {
             customization: customization,
             others: others,
         };
-        if (this.state.submitButton === 'Submit') {
-            axios.post('/Lighthouse', payload)
-                .then(() => {
-                    this.setState({
-                        model: '',
-                        type: '',
-                        productivity: '',
-                        sustainability: '',
-                        agility: '',
-                        speedToMarket: '',
-                        customization: '',
-                        others: '',
-                        openDialog: true,
-                        dialogMessage: 'Lighthouse details added',
-                        color: green[500],
-                        submitButton: 'Submit'
-                    })
-                })
-                .catch(() => {
-                    this.setState({
-                        openDialog: true,
-                        dialogMessage: 'Lighthouse details failed to update',
-                        color: red[500],
-                        submitButton: 'Submit'
-                    })
-                })
-        } else if (this.state.submitButton === 'Edit details') {
-            axios.patch(`/Lighthouse/${this.state.lighthouseId}`, payload)
-                .then(() => {
-                    this.setState({
-                        model: '',
-                        type: '',
-                        productivity: '',
-                        sustainability: '',
-                        agility: '',
-                        speedToMarket: '',
-                        customization: '',
-                        others: '',
-                        openDialog: true,
-                        dialogMessage: 'Lighthouse details edited',
-                        color: green[500],
-                        submitButton: 'Submit'
-                    })
-                })
-                .catch(() => {
-                    this.setState({
-                        openDialog: true,
-                        dialogMessage: 'Lighthouse details failed to update',
-                        color: red[500],
-                        submitButton: 'Edit details'
-                    })
-                })
-        }
-    }
-
-    handleLighthouseData() {
-        axios.get(`/Lighthouse/${this.state.lighthouseId}`)
-            .then(res => {
+        axios.post('/Lighthouse', payload)
+            .then(() => {
                 this.setState({
-                    model: res.data.lighthouseModel,
-                    type: res.data.lighthouseType,
-                    productivity: res.data.productivity,
-                    sustainability: res.data.sustainability,
-                    agility: res.data.agility,
-                    speedToMarket: res.data.speedToMarket,
-                    customization: res.data.customization,
-                    others: res.data.others,
-                    submitButton: 'Edit details',
-                    project: res.data.projects,
-                });
-                if (res.data.owner !== undefined) {
-                    this.setState({
-                        companyId: res.data.owner.id,
-                        companyName: res.data.owner.companyName,
-                    });
-                };
+                    model: '',
+                    type: '',
+                    productivity: '',
+                    sustainability: '',
+                    agility: '',
+                    speedToMarket: '',
+                    customization: '',
+                    others: '',
+                    openDialog: true,
+                    dialogMessage: 'Lighthouse details added',
+                    color: green[500],
+                    submitButton: 'Submit'
+                })
             })
-            .catch(err => console.log('error project data: ', err))
+            .catch(() => {
+                this.setState({
+                    openDialog: true,
+                    dialogMessage: 'Lighthouse details failed to update',
+                    color: red[500],
+                    submitButton: 'Submit'
+                })
+            })
+
     }
 
-    handleEdit() {
+    handleAddDetails() {
         this.setState({
+            model: '',
+            type: '',
+            productivity: '',
+            sustainability: '',
+            agility: '',
+            speedToMarket: '',
+            customization: '',
+            others: '',
+            submitButton: 'Submit',
             disabled: false,
-            submitButton: 'Edit details'
-        });
-    }
+        })
+    };
 
     deleteProject(projectId) {
         axios.delete(`/Project/${projectId}`)
@@ -259,13 +208,9 @@ class UserLighthouseDetails extends Component {
                 console.log('vendorName: ', vendorName);
                 return (vendorName);
             })
-        // console.log('vendorName: ', vendorName);
-        // return vendorName;
     }
 
     render() {
-        const view = <Tooltip id="edit_tooltip">View</Tooltip>;
-        const remove = <Tooltip id="remove_tooltip">Delete</Tooltip>;
         const classes = makeStyles((theme) => ({
             textField: {
                 marginLeft: theme.spacing(1),
@@ -335,22 +280,9 @@ class UserLighthouseDetails extends Component {
                     <Row>
                         <Col md={12}>
                             <Card
-                                title="Lighthouse Details"
+                                title="Add New Lighthouse"
                                 content={
                                     <div className={classes.root}>
-
-                                        &nbsp;
-                                        <Button
-                                            color="primary"
-                                            variant="outlined"
-                                            className={classes.button}
-                                            onClick={() => this.handleEdit()}
-                                            disabled={this.state.editDisabled}
-                                        >
-                                            <EditIcon /> &nbsp;
-                                            Edit details
-                                        </Button>
-                                        &nbsp; <br />
                                         <form
                                             className={classes.textField}
                                             noValidate
@@ -552,108 +484,11 @@ class UserLighthouseDetails extends Component {
                                                 <center>
                                                     {this.state.color === green[500] ?
                                                         <div className={classes.root}>
-                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: this.state.color, fontSize: 60 }} />
+                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: green[500], fontSize: 60 }} />
                                                         </div>
                                                         :
                                                         <div>
-                                                            <CancelOutlined className="fa" style={{ color: this.state.color, fontSize: 60 }} />
-                                                        </div>
-                                                    }
-                                                    <DialogContentText id="alert-dialog-description">
-                                                        {this.state.dialogMessage}
-                                                    </DialogContentText>
-                                                </center>
-                                            </DialogContent>
-                                        </Dialog>
-                                    </div>
-                                }
-                            />
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        <Col md={12}>
-                            <Card
-                                title="List of Projects"
-                                ctTableFullWidth
-                                ctTableResponsive
-                                content={
-                                    <div className={classes.root}>
-                                        {/* <Link to={{
-                                            pathname: `user/add-project/${this.state.lighthouseId}`
-                                        }}> */}
-                                            <Button
-                                                color="primary"
-                                                variant="outlined"
-                                                className={classes.button}
-                                                // onClick={() => this.handleAddProject()}
-                                                href={`/user/add-project/${this.state.lighthouseId}`}
-                                            >
-                                                <AddIcon /> &nbsp;
-                                                Add new project
-                                            </Button>
-                                        {/* </Link> */}
-                                        <Table striped hover>
-                                            <thead>
-                                                <tr>
-                                                    <th><center><b>No.</b></center></th>
-                                                    {projectInfo.map((info, key) => {
-                                                        return <th key={key}><center><b>{info}</b></center></th>
-                                                    })}
-                                                    <th><center><b>Actions</b></center></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {this.state.project && this.state.project.map((proj, key) => {
-                                                    return (
-                                                        <tr key={key}>
-                                                            <td><center>{key + 1}.</center></td>
-                                                            <td><center>{proj.duration}</center></td>
-                                                            <td><center>RM {nFormatter(proj.totalCost)}</center></td>
-                                                            <td><center>{proj.sourceOfTechnology}</center></td>
-                                                            {proj.vendor !== null ?
-                                                                <td><center>{this.getVendorCompany(proj.vendor)}</center></td>
-                                                                :
-                                                                <td><center>null</center></td>
-                                                            }
-                                                            <td className="td-actions text-right"><center>
-                                                                <OverlayTrigger placement="top" overlay={view}>
-                                                                    <Link to={{
-                                                                        pathname: `/user/project-info/${proj.id}`,
-                                                                    }}
-                                                                    >
-                                                                        <Button bsStyle="info" simple type="button" bsSize="large">
-                                                                            <i className="fa fa-external-link" />
-                                                                        </Button>
-
-                                                                    </Link>
-                                                                </OverlayTrigger>
-                                                                <OverlayTrigger placement="top" overlay={remove}>
-                                                                    <Button bsStyle="danger" simple type="button" bsSize="large
-                                                                " onClick={() => this.deleteProject(proj.id)}>
-                                                                        <i className="fa fa-trash-o" />
-                                                                    </Button>
-                                                                </OverlayTrigger>
-                                                            </center></td>
-                                                        </tr>
-                                                    )
-                                                })}
-                                            </tbody>
-                                        </Table>
-                                        <Dialog
-                                            open={this.state.openDialog}
-                                            onBackdropClick={this.handleCloseDialog}
-                                            aria-describedby="alert-dialog-description"
-                                        >
-                                            <DialogContent>
-                                                <center>
-                                                    {this.state.dialogColor === green[500] ?
-                                                        <div className={classes.root}>
-                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: this.state.dialogColor, fontSize: 60 }} />
-                                                        </div>
-                                                        :
-                                                        <div>
-                                                            <CancelOutlined className="fa" style={{ color: this.state.dialogColor, fontSize: 60 }} />
+                                                            <CancelOutlined className="fa" style={{ color: red[500], fontSize: 60 }} />
                                                         </div>
                                                     }
                                                     <DialogContentText id="alert-dialog-description">
@@ -673,4 +508,4 @@ class UserLighthouseDetails extends Component {
     }
 };
 
-export default UserLighthouseDetails;
+export default UserAddLighthouseDetails;

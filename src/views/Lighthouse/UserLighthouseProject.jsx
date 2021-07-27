@@ -3,10 +3,9 @@ import { Grid, Row, Col, Table, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Card from 'components/Card/Card';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import Button from "components/CustomButton/CustomButton";
-import { Dialog, DialogContent, DialogContentText, makeStyles } from '@material-ui/core';
+import { Dialog, DialogContent, DialogContentText, makeStyles, Button } from '@material-ui/core';
 import { green, red } from '@material-ui/core/colors';
-import { CancelOutlined, CheckCircleOutlineOutlined } from '@material-ui/icons';
+import { CancelOutlined, CheckCircleOutlineOutlined, Add as AddIcon } from '@material-ui/icons';
 import io from 'assets/sailsSocket';
 
 const lighthouseInfo = [
@@ -31,12 +30,17 @@ class UserLighthouse extends Component {
             dialogMessage: '',
             dialogColor: null,
             project: [],
+            companyId: '',
         };
+        // this.fetchProjectData = this.fetchProjectData.bind(this);
+        this.fetchCompanyData = this.fetchCompanyData.bind(this);
+        this.fetchUserData = this.fetchUserData.bind(this);
     };
 
     componentDidMount() {
-        this.fetchCompanyData();
-        this.fetchProjectData();
+        // this.fetchProjectData();
+        const userId = localStorage.getItem("userId");
+        this.fetchUserData(userId);
     };
 
     handleCloseDialog = (event, reason) => {
@@ -47,35 +51,28 @@ class UserLighthouse extends Component {
         this.setState({ openDialog: false });
     }
 
-    fetchCompanyData() {
-        axios.get('/Company/602f0b2b2d925c5ba0817c7d')
+    fetchUserData(user) {
+        axios.get(`/Account/${user}`)
+            .then((res) => {
+                this.setState({ userProfile: res.data });
+                this.fetchCompanyData(res.data.companyName);
+                // console.log(res.data.companyName);
+            })
+    }
+
+    fetchCompanyData(companyName) {
+        axios.get(`/Company?companyName=${companyName}`)
             .then(res => {
-                this.setState({
-                    // company: res.data,
-                    // project: res.data.projects,
-                    lighthouseId: res.data.lighthouseDetails.id,
-                    lighthouse: res.data.lighthouseDetails,
-                });
+                this.setState({ companyId: res.data[0].id });
+                if (res.data[0].lighthouseDetails !== undefined)
+                    this.setState({
+                        lighthouseId: res.data[0].lighthouseDetails.id,
+                        lighthouse: res.data[0].lighthouseDetails,
+                    });
+                // console.log(res.data[0]);
             })
             .catch(err => console.log('Error fetching company data: ', err));
     };
-
-    updateLighthouseData() {
-        io.socket.on('lighthouse', () => {
-            this.fetchCompanyData();
-        })
-    };
-
-    fetchProjectData() {
-        axios.get('/Lighthouse')
-            .then(res => {
-                for (const [, value] of Object.entries(res.data)) {
-                    if (value.owner === "602f0b2b2d925c5ba0817c7d") {
-                        this.setState({ project: value.projects });
-                    }
-                }
-            })
-    }
 
     deleteLighthouse(lighthouseId) {
         axios.delete(`/Lighthouse/${lighthouseId}`)
@@ -94,6 +91,16 @@ class UserLighthouse extends Component {
                 })
             })
     };
+
+    fetchProjectData(lighthouseId) {
+        var totalProject = 0;
+        // if (this.state.lighthouseId !== '')
+        axios.get(`/Lighthouse/${lighthouseId}`)
+            .then(res => {
+                totalProject = res.data.projects.length;
+            })
+        return totalProject;
+    }
 
     render() {
         const view = <Tooltip id="edit_tooltip">View</Tooltip>;
@@ -143,18 +150,29 @@ class UserLighthouse extends Component {
                                 ctTableResponsive
                                 content={
                                     <div>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <Button
+                                            color="primary"
+                                            variant="outlined"
+                                            className={classes.button}
+                                            // onClick={() => this.handleAddDetails()}
+                                            href={`/user/add-lighthouse/${this.state.companyId}`}
+                                        >
+                                            <AddIcon /> &nbsp;
+                                            Add New Lighthouse
+                                        </Button>
                                         <Table striped hover>
                                             <thead>
                                                 <tr>
                                                     <th><center><b>No.</b></center></th>
-                                                    {lighthouseInfo.map((info, key) => {
+                                                    {lighthouseInfo !== undefined && lighthouseInfo.map((info, key) => {
                                                         return <th key={key}><center><b>{info}</b></center></th>
                                                     })}
                                                     <th><center><b>Actions</b></center></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {this.state.lighthouse !== null && this.state.lighthouse.map((lighthouse, key) => {
+                                                {this.state.lighthouse !== undefined && this.state.lighthouse.map((lighthouse, key) => {
                                                     return (
                                                         <tr key={key}>
                                                             <td><center>{key + 1}.</center></td>
@@ -162,24 +180,25 @@ class UserLighthouse extends Component {
                                                             <td><center>{lighthouse.lighthouseType}</center></td>
                                                             <td><center>{lighthouse.productivity}</center></td>
                                                             {lighthouse.sustainability !== undefined ?
-                                                                <td><center>{lighthouse.sustainability[0]}</center></td>
+                                                                <td><center>{lighthouse.sustainability}</center></td>
                                                                 :
                                                                 <td><center>null</center></td>
                                                             }
                                                             {lighthouse.agility !== undefined ?
-                                                                <td><center>{lighthouse.agility[0]}</center></td>
+                                                                <td><center>{lighthouse.agility}</center></td>
                                                                 :
                                                                 <td><center>null</center></td>
                                                             }
+
                                                             <td><center>{lighthouse.speedToMarket}</center></td>
                                                             <td><center>{lighthouse.customization}</center></td>
-                                                            <td><center>{this.state.project.length}</center></td>
+                                                            <td><center>{this.fetchProjectData(lighthouse.id)}</center></td>
                                                             {/* <td><center>{lighthouse.others}</center></td> */}
                                                             <td className="td-actions text-right"><center>
                                                                 <OverlayTrigger placement="top" overlay={view}>
                                                                     <Link to={{
                                                                         pathname: `/user/lighthouse-info/${lighthouse.id}`,
-                                                                        
+
                                                                     }}
                                                                     >
                                                                         <Button bsStyle="info" simple type="button" bsSize="large">

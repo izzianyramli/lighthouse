@@ -20,28 +20,52 @@ import { Grid } from "react-bootstrap";
 
 class Footer extends Component {
   render() {
+
+    var style = {
+      backgroundColor: "rgba(203, 203, 210, 0.15)",
+      // borderTop: "1px solid #E7E7E7",
+      textAlign: "center",
+      padding: "20px",
+      position: "fixed",
+      left: "0",
+      bottom: "0",
+      height: "60px",
+      width: "100%",
+    }
+
+    var phantom = {
+      display: 'block',
+      padding: '20px',
+      height: '60px',
+      width: '100%',
+    }
+
     return (
-      <footer className="footer">
-        <Grid fluid>
-          <nav className="pull-left">
-            <ul>
-              <li>
-                <a href="/admin/dashboard">Home</a>
-              </li>
-              <li>
-                <a href="https://www.mida.gov.my">Company</a>
-              </li>
-            </ul>
-          </nav>
-          <p className="copyright pull-right">
-            &copy; {new Date().getFullYear()}{" "}
-            <a href="https://www.mida.gov.my/malaysias-lighthouse-project-the-beacon-of-malaysias-future-industries/">
-              Lighthouse Project
-            </a>
-            &nbsp; The Beacon of Malaysia’s Future Industries
-          </p>
-        </Grid>
-      </footer>
+      // <footer className="footer">
+      <div style={phantom}>
+        <div style={style}>
+          <Grid fluid>
+            <nav className="pull-left">
+              <ul>
+                <li>
+                  <a href="/admin/dashboard">Home</a>
+                </li>
+                <li>
+                  <a href="https://www.mida.gov.my">Company</a>
+                </li>
+              </ul>
+            </nav>
+            <p className="copyright pull-right">
+              &copy; {new Date().getFullYear()}{" "}
+              <a href="https://www.mida.gov.my/malaysias-lighthouse-project-the-beacon-of-malaysias-future-industries/">
+                Lighthouse Project
+              </a>
+              &nbsp; The Beacon of Malaysia’s Future Industries
+            </p>
+          </Grid>
+        </div>
+      </div>
+      // </footer>
     );
   }
 }
