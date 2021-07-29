@@ -1,15 +1,18 @@
-## Install nodejs and npm
-
-```
-curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
-sudo bash nodesourse_setup.sh
-```
-
-## Install this package
+## Clone this package
 
 ```
 $ git clone <repository-url>
 $ cd lighthouse
+```
+## Install nodejs and npm
+
+```
+$ curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
+$ sudo bash nodesourse_setup.sh
+```
+
+## Install this package
+```
 $ npm install
 ```
 
