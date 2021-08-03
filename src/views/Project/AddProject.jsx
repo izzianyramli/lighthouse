@@ -53,7 +53,7 @@ class ProjectDetails extends Component {
             phase: [],
             openDialog: false,
             dialogMessage: '',
-            color: null,
+            dialogColor: null,
             submitButton: 'Submit',
             lighthouseId: Object.values(props.match.params)[0],
             disabled: false,
@@ -114,7 +114,7 @@ class ProjectDetails extends Component {
                         phase: [],
                         openDialog: true,
                         dialogMessage: 'Project details added',
-                        color: green[500],
+                        dialogColor: green[500],
                         submitButton: 'Submit'
                     })
                 })
@@ -122,7 +122,7 @@ class ProjectDetails extends Component {
                     this.setState({
                         openDialog: true,
                         dialogMessage: 'Project details failed to update',
-                        color: red[500],
+                        dialogColor: red[500],
                         submitButton: 'Submit'
                     })
                 })
@@ -440,13 +440,13 @@ class ProjectDetails extends Component {
                                         >
                                             <DialogContent>
                                                 <center>
-                                                    {this.state.color === green[500] ?
+                                                    {this.state.dialogColor === green[500] ?
                                                         <div className={classes.root}>
-                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: this.state.color, fontSize: 60 }} />
+                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: green[500], fontSize: 60 }} />
                                                         </div>
                                                         :
                                                         <div>
-                                                            <CancelOutlined className="fa" style={{ color: this.state.color, fontSize: 60 }} />
+                                                            <CancelOutlined className="fa" style={{ color: red[500], fontSize: 60 }} />
                                                         </div>
                                                     }
                                                     <DialogContentText id="alert-dialog-description">

@@ -5,7 +5,7 @@ import {
     Col,
     Table,
     OverlayTrigger,
-    Tooltip,
+    Tooltip
 } from 'react-bootstrap';
 import Card from 'components/Card/Card';
 import {
@@ -17,6 +17,8 @@ import {
     DialogContent,
     DialogContentText,
     MenuItem,
+    Checkbox,
+    FormControlLabel,
 } from '@material-ui/core';
 import axios from 'axios';
 import { green, red } from '@material-ui/core/colors';
@@ -27,201 +29,146 @@ import {
     Add as AddIcon,
     Edit as EditIcon,
 } from '@material-ui/icons';
+
 import { Link } from 'react-router-dom';
 
-const projectInfo = [
-    "Duration",
-    "Total Cost",
-    "Source of Technology",
-    "Vendor",
-];
+const projectUpdates = [
+    "Date",
+    "Checklists",
+    "Achievements",
+    "Problems"
+]
 
-// const lighthouseId = Object.values(props.match.params)[0];
-
-function nFormatter(num) {
-    if (num >= 1000000000000) {
-        return (num / 1000000000000).toFixed(1).replace(/\.0$/, '') + 'T';
-    }
-    // if (num >= 100000000) {
-    //     return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
-    // }
-    if (num >= 1000000) {
-        return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-    }
-    if (num > 1000) {
-        return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-    }
-    return num;
-};
-
-class UserLighthouseDetails extends Component {
+class AdminProjectDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            lighthouseId: Object.values(props.match.params)[0],
             companyId: '',
             companyName: '',
-            model: '',
-            type: '',
-            productivity: '',
-            sustainability: '',
-            agility: '',
-            speedToMarket: '',
-            customization: '',
-            others: '',
+            duration: "",
+            totalCost: "",
+            sourceOfTechnology: "",
+            detailsOfTechnology: "",
+            facilitationNeeded: "",
+            phase: [],
             openDialog: false,
             dialogMessage: '',
-            dialogColor: null,
+            color: null,
             submitButton: 'Submit',
+            projectId: Object.values(props.match.params)[0],
             disabled: true,
             editDisabled: false,
-            project: [],
+            projectUpdates: [],
         };
-        this.handleLighthouseData = this.handleLighthouseData.bind(this);
+        this.handleProjectData = this.handleProjectData.bind(this);
     };
 
     componentDidMount() {
-        this.handleLighthouseData();
-        const userId = localStorage.getItem("userId");
-        this.fetchUserData(userId);
-    }
-
-    fetchUserData(user) {
-        axios.get(`/Account/${user}`)
-            .then((res) => {
-                this.setState({
-                    userProfile: res.data,
-                    companyName: res.data.companyName
-                });
-                this.fetchCompanyId(res.data.companyName)
-            })
-    }
-
-    fetchCompanyId(companyName) {
-        axios.get(`/Company?companyName=${companyName}`)
-            .then((res) => {
-                this.setState({ companyId: res.data[0].id });
-            })
+        this.handleProjectData();
     }
 
     handleCloseDialog = (event, reason) => {
-        event.preventDefault();
         if (reason === 'clickaway') {
             return;
         }
         this.setState({ openDialog: false });
     }
 
-
-
     handleChange(event) {
         this.setState({
-            [event.target.name]: event.target.value,
+            [event.target.name]: event.target.value
         });
     };
 
-    handleSubmitLighthouse(
+    handleSubmit(
         event,
         companyId,
-        model,
-        type,
-        productivity,
-        sustainability,
-        agility,
-        speedToMarket,
-        customization,
-        others
+        duration,
+        totalCost,
+        sourceOfTechnology,
+        detailsOfTechnology,
+        facilitationNeeded,
+        phase
     ) {
         event.preventDefault();
         const payload = {
-            company: companyId,
-            lighthouseModel: model,
-            lighthouseType: type,
-            productivity: productivity,
-            sustainability: sustainability,
-            agility: agility,
-            speedToMarket: speedToMarket,
-            customization: customization,
-            others: others,
+            owner: companyId,
+            duration: duration,
+            totalCost: totalCost,
+            sourceOfTechnology: sourceOfTechnology,
+            detailsOfTechnology: detailsOfTechnology,
+            facilitationNeeded: facilitationNeeded,
+            phase: [phase]
         };
         if (this.state.submitButton === 'Submit') {
-            axios.post('/Lighthouse', payload)
+            axios.post('/Project', payload)
                 .then(() => {
                     this.setState({
-                        model: '',
-                        type: '',
-                        productivity: '',
-                        sustainability: '',
-                        agility: '',
-                        speedToMarket: '',
-                        customization: '',
-                        others: '',
+                        duration: '',
+                        totalCost: '',
+                        sourceOfTechnology: '',
+                        detailsOfTechnology: '',
+                        facilitationNeeded: '',
+                        phase: [],
                         openDialog: true,
-                        dialogMessage: 'Lighthouse details added',
-                        dialogColor: green[500],
+                        dialogMessage: 'Project details added',
+                        color: green[500],
                         submitButton: 'Submit'
                     })
                 })
                 .catch(() => {
                     this.setState({
                         openDialog: true,
-                        dialogMessage: 'Lighthouse details failed to update',
-                        dialogColor: red[500],
+                        dialogMessage: 'Project details failed to update',
+                        color: red[500],
                         submitButton: 'Submit'
                     })
                 })
-        } else if (this.state.submitButton === 'Edit details') {
-            axios.patch(`/Lighthouse/${this.state.lighthouseId}`, payload)
+        } else if (this.state.submitButton === 'Edit') {
+            axios.patch(`/Project/${this.state.projectId}`, payload)
                 .then(() => {
                     this.setState({
-                        model: '',
-                        type: '',
-                        productivity: '',
-                        sustainability: '',
-                        agility: '',
-                        speedToMarket: '',
-                        customization: '',
-                        others: '',
+                        duration: '',
+                        totalCost: '',
+                        sourceOfTechnology: '',
+                        detailsOfTechnology: '',
+                        facilitationNeeded: '',
+                        phase: [],
                         openDialog: true,
-                        dialogMessage: 'Lighthouse details edited',
-                        dialogColor: green[500],
+                        dialogMessage: 'Project details edited',
+                        color: green[500],
                         submitButton: 'Submit'
                     })
                 })
                 .catch(() => {
                     this.setState({
                         openDialog: true,
-                        dialogMessage: 'Lighthouse details failed to update',
-                        dialogColor: red[500],
-                        submitButton: 'Edit details'
+                        dialogMessage: 'Project details failed to update',
+                        color: red[500],
+                        submitButton: 'Edit'
                     })
                 })
         }
     }
 
-    handleLighthouseData() {
-        axios.get(`/Lighthouse/${this.state.lighthouseId}`)
+    handleProjectData() {
+        axios.get(`/Project/${this.state.projectId}`)
             .then(res => {
+                console.log(res.data);
                 this.setState({
-                    model: res.data.lighthouseModel,
-                    type: res.data.lighthouseType,
-                    productivity: res.data.productivity,
-                    sustainability: res.data.sustainability,
-                    agility: res.data.agility,
-                    speedToMarket: res.data.speedToMarket,
-                    customization: res.data.customization,
-                    others: res.data.others,
+                    companyId: res.data.lighthouse.owner,
+                    // companyName: red.data.owner.companyName,
+                    duration: res.data.duration,
+                    totalCost: res.data.totalCost,
+                    sourceOfTechnology: res.data.sourceOfTechnology,
+                    detailsOfTechnology: res.data.detailsOfTechnology,
+                    facilitationNeeded: res.data.facilitationNeeded,
                     submitButton: 'Edit details',
-                    project: res.data.projects,
+                    projectUpdates: res.data.projectUpdate
                 });
-                if (res.data.owner !== undefined) {
-                    this.setState({
-                        companyId: res.data.owner.id,
-                        companyName: res.data.owner.companyName,
-                    });
-                };
             })
             .catch(err => console.log('error project data: ', err))
+        // };
     }
 
     handleEdit() {
@@ -231,36 +178,17 @@ class UserLighthouseDetails extends Component {
         });
     }
 
-    deleteProject(projectId) {
-        axios.delete(`/Project/${projectId}`)
-            .then(() => {
-                this.setState({
-                    openDialog: true,
-                    dialogMessage: 'Project details deleted',
-                    dialogColor: green[500]
-                });
-            })
-            .catch(() => {
-                this.setState({
-                    openDialog: true,
-                    dialogMessage: 'Failed to delete project',
-                    dialogColor: red[500],
-                })
-            })
-    };
-
-    getVendorCompany(vendorId) {
-        console.log('vendorId: ', vendorId);
-        var vendorName = "";
-        axios.get(`/Company/${vendorId}`)
-            .then(res => {
-                console.log(res.data.companyName);
-                vendorName = res.data.companyName;
-                console.log('vendorName: ', vendorName);
-                return (vendorName);
-            })
-        // console.log('vendorName: ', vendorName);
-        // return vendorName;
+    handleAddDetails() {
+        this.setState({
+            duration: '',
+            totalCost: '',
+            sourceOfTechnology: '',
+            detailsOfTechnology: '',
+            facilitationNeeded: '',
+            phase: [],
+            submitButton: 'Submit',
+            disabled: false,
+        })
     }
 
     render() {
@@ -307,27 +235,63 @@ class UserLighthouseDetails extends Component {
             }
         }));
 
-        const model = [
+        const source = [
             {
-                value: '4 Walls',
-                label: '4 Walls'
+                value: 'Foreign',
+                label: 'Foreign'
             },
             {
-                value: 'End-to-End',
-                label: 'End-to-End'
+                value: 'Local',
+                label: 'Local'
+            },
+            {
+                value: 'Both',
+                label: 'Both'
             }
         ];
 
-        const type = [
+        const facilitation = [
             {
-                value: 'Anchor',
-                label: 'Anchor'
+                value: 'Incentives/Grant',
+                label: 'Incentives/Grant'
+            },
+            {
+                value: 'Talent/Training',
+                label: 'Talent/Training'
+            },
+            {
+                value: 'Logistic',
+                label: 'Logistic'
             },
             {
                 value: 'Vendor',
                 label: 'Vendor'
-            }
-        ];
+            },
+            {
+                value: 'Supplier',
+                label: 'Supplier'
+            },
+            {
+                value: 'Marker',
+                label: 'Market'
+            },
+            {
+                value: 'Technical Support',
+                label: 'Technical Support'
+            },
+            {
+                value: 'Waste Management',
+                label: 'Waste Management'
+            },
+            {
+                value: 'Warehousing',
+                label: 'Warehousing'
+            },
+            {
+                value: 'TBD',
+                label: 'TBD'
+            },
+        ]
 
         return (
             <div className="content">
@@ -335,10 +299,18 @@ class UserLighthouseDetails extends Component {
                     <Row>
                         <Col md={12}>
                             <Card
-                                title="Lighthouse Details"
+                                title="Project Details"
                                 content={
                                     <div className={classes.root}>
-
+                                        {/* <Button
+                                            color="primary"
+                                            variant="outlined"
+                                            className={classes.button}
+                                            onClick={() => this.handleAddDetails()}
+                                        >
+                                            <AddIcon /> &nbsp;
+                                            Add New Project
+                                        </Button> */}
                                         &nbsp;
                                         <Button
                                             color="primary"
@@ -350,6 +322,21 @@ class UserLighthouseDetails extends Component {
                                             <EditIcon /> &nbsp;
                                             Edit details
                                         </Button>
+                                        &nbsp;
+                                        <Link to={{
+                                            pathname: `/admin/project-update/${this.state.projectId}`
+                                        }}>
+                                            <Button
+                                                color="primary"
+                                                variant="outlined"
+                                                className={classes.button}
+                                                disabled
+                                            >
+                                                <AddIcon /> &nbsp;
+                                                Add Project Updates
+                                            </Button>
+                                        </Link>
+
                                         &nbsp; <br />
                                         <form
                                             className={classes.textField}
@@ -395,13 +382,37 @@ class UserLighthouseDetails extends Component {
                                                 color="textPrimary"
                                                 gutterBottom
                                             >
-                                                LIGHTHOUSE INFO
+                                                PROJECT INFO
                                             </Typography>
                                             <TextField
                                                 onChange={(event) => this.handleChange(event)}
-                                                value={this.state.model}
-                                                label="Model"
-                                                name="model"
+                                                value={this.state.duration}
+                                                label="Duration"
+                                                name="duration"
+                                                type="text"
+                                                variant="outlined"
+                                                style={{ margin: 8 }}
+                                                fullWidth
+                                                disabled={this.state.disabled}
+                                            />
+
+                                            <TextField
+                                                onChange={(event) => this.handleChange(event)}
+                                                value={this.state.totalCost}
+                                                label="Total Cost"
+                                                name="totalCost"
+                                                type="text"
+                                                variant="outlined"
+                                                style={{ margin: 8 }}
+                                                fullWidth
+                                                disabled={this.state.disabled}
+                                            />
+
+                                            <TextField
+                                                onChange={(event) => this.handleChange(event)}
+                                                value={this.state.sourceOfTechnology}
+                                                label="Source of Technology"
+                                                name="sourceOfTechnology"
                                                 type="text"
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
@@ -409,7 +420,7 @@ class UserLighthouseDetails extends Component {
                                                 select
                                                 disabled={this.state.disabled}
                                             >
-                                                {model.map((option) => (
+                                                {source.map((option) => (
                                                     <MenuItem key={option.value} value={option.value}>
                                                         {option.label}
                                                     </MenuItem>
@@ -418,28 +429,9 @@ class UserLighthouseDetails extends Component {
 
                                             <TextField
                                                 onChange={(event) => this.handleChange(event)}
-                                                value={this.state.type}
-                                                label="Type"
-                                                name="type"
-                                                type="text"
-                                                variant="outlined"
-                                                style={{ margin: 8 }}
-                                                fullWidth
-                                                select
-                                                disabled={this.state.disabled}
-                                            >
-                                                {type.map((option) => (
-                                                    <MenuItem key={option.value} value={option.value}>
-                                                        {option.label}
-                                                    </MenuItem>
-                                                ))}
-                                            </TextField>
-
-                                            <TextField
-                                                onChange={(event) => this.handleChange(event)}
-                                                value={this.state.productivity}
-                                                label="Productivity "
-                                                name="productivity"
+                                                value={this.state.detailsOfTechnology}
+                                                label="Details of Technology"
+                                                name="detailsOfTechnology"
                                                 type="text"
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
@@ -449,57 +441,9 @@ class UserLighthouseDetails extends Component {
 
                                             <TextField
                                                 onChange={(event) => this.handleChange(event)}
-                                                value={this.state.sustainability}
-                                                label="Sustainability"
-                                                name="sustainability"
-                                                type="text"
-                                                variant="outlined"
-                                                style={{ margin: 8 }}
-                                                fullWidth
-                                                disabled={this.state.disabled}
-                                            />
-
-                                            <TextField
-                                                onChange={(event) => this.handleChange(event)}
-                                                value={this.state.agility}
-                                                label="Agility"
-                                                name="agility"
-                                                type="text"
-                                                variant="outlined"
-                                                style={{ margin: 8 }}
-                                                fullWidth
-                                                disabled={this.state.disabled}
-                                            />
-
-                                            <TextField
-                                                onChange={(event) => this.handleChange(event)}
-                                                value={this.state.speedToMarket}
-                                                label="Speed to Market"
-                                                name="speedToMarket"
-                                                type="text"
-                                                variant="outlined"
-                                                style={{ margin: 8 }}
-                                                fullWidth
-                                                disabled={this.state.disabled}
-                                            />
-
-                                            <TextField
-                                                onChange={(event) => this.handleChange(event)}
-                                                value={this.state.customization}
-                                                label="Customization"
-                                                name="customization"
-                                                type="text"
-                                                variant="outlined"
-                                                style={{ margin: 8 }}
-                                                fullWidth
-                                                disabled={this.state.disabled}
-                                            />
-
-                                            <TextField
-                                                onChange={(event) => this.handleChange(event)}
-                                                value={this.state.others}
-                                                label="Others"
-                                                name="others"
+                                                value={this.state.phase}
+                                                label="Phase"
+                                                name="phase"
                                                 type="text"
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
@@ -508,41 +452,54 @@ class UserLighthouseDetails extends Component {
                                             />
 
                                             &nbsp; <br />
-                                            <Button
-                                                className={classes.button}
-                                                variant="outlined"
-                                                color="default"
-                                                onClick={(event) => this.handleSubmitLighthouse(
-                                                    event,
-                                                    this.state.companyId,
-                                                    this.state.model,
-                                                    this.state.type,
-                                                    this.state.productivity,
-                                                    this.state.sustainability,
-                                                    this.state.agility,
-                                                    this.state.speedToMarket,
-                                                    this.state.customization,
-                                                    this.state.others,
-                                                )}
-                                                disabled={this.state.disabled}
+                                            <Typography
+                                                className={classes.title}
+                                                align="left"
+                                                color="textPrimary"
+                                                gutterBottom
                                             >
-                                                {/* {this.state.submitButton} */}
-                                                Submit
-                                                &nbsp;
-                                                <Done fontSize="small" style={{ color: green[500] }} />
-                                            </Button>
-                                            &nbsp;
-                                            <Button
-                                                className={classes.button}
-                                                variant="outlined"
-                                                color="default"
-                                                onClick={() => this.setState({ disabled: true })}
-                                                disabled={this.state.disabled}
-                                            >
-                                                Cancel
-                                            </Button>
+                                                FACILITATIONS NEEDED
+                                            </Typography>
+
+                                            {facilitation.map((option) => (
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            onChange={(event) => this.handleChange(event)}
+                                                            key={option.value}
+                                                            name={option.value}
+                                                            value={option.value}
+                                                            color="primary"
+                                                        />
+                                                    }
+                                                    label={option.label}
+                                                    disabled={this.state.disabled}
+                                                />
+                                            ))}
                                         </form>
 
+                                        &nbsp; <br />
+                                        <Button
+                                            className={classes.button}
+                                            variant="outlined"
+                                            color="default"
+                                            onClick={(event) => this.handleSubmit(
+                                                event,
+                                                this.state.companyId,
+                                                this.state.duration,
+                                                this.state.totalCost,
+                                                this.state.sourceOfTechnology,
+                                                this.state.detailsOfTechnology,
+                                                this.state.facilitationNeeded,
+                                                this.state.phase,
+                                            )}
+                                            disabled={this.state.disabled}
+                                        >
+                                            {/* {this.state.submitButton} */}
+                                            SUBMIT
+                                            &nbsp;
+                                            <Done fontSize="small" style={{ color: green[500] }} />
+                                        </Button>
                                         <Dialog
                                             open={this.state.openDialog}
                                             onBackdropClick={this.handleCloseDialog}
@@ -550,13 +507,13 @@ class UserLighthouseDetails extends Component {
                                         >
                                             <DialogContent>
                                                 <center>
-                                                    {this.state.dialogColor === green[500] ?
+                                                    {this.state.color === green[500] ?
                                                         <div className={classes.root}>
-                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: green[500], fontSize: 60 }} />
+                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: this.state.color, fontSize: 60 }} />
                                                         </div>
                                                         :
                                                         <div>
-                                                            <CancelOutlined className="fa" style={{ color: red[500], fontSize: 60 }} />
+                                                            <CancelOutlined className="fa" style={{ color: this.state.color, fontSize: 60 }} />
                                                         </div>
                                                     }
                                                     <DialogContentText id="alert-dialog-description">
@@ -574,63 +531,43 @@ class UserLighthouseDetails extends Component {
                     <Row>
                         <Col md={12}>
                             <Card
-                                title="List of Projects"
+                                title="Project Updates"
                                 ctTableFullWidth
                                 ctTableResponsive
                                 content={
-                                    <div className={classes.root}>
-                                        {/* <Link to={{
-                                            pathname: `user/add-project/${this.state.lighthouseId}`
-                                        }}> */}
-                                            <Button
-                                                color="primary"
-                                                variant="outlined"
-                                                className={classes.button}
-                                                // onClick={() => this.handleAddProject()}
-                                                href={`/user/add-project/${this.state.lighthouseId}`}
-                                            >
-                                                <AddIcon /> &nbsp;
-                                                Add new project
-                                            </Button>
-                                        {/* </Link> */}
+                                    <div>
                                         <Table striped hover>
                                             <thead>
                                                 <tr>
                                                     <th><center><b>No.</b></center></th>
-                                                    {projectInfo.map((info, key) => {
+                                                    {projectUpdates.map((info, key) => {
                                                         return <th key={key}><center><b>{info}</b></center></th>
                                                     })}
                                                     <th><center><b>Actions</b></center></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {this.state.project && this.state.project.map((proj, key) => {
+                                                {this.state.projectUpdates && this.state.projectUpdates.map((proj, key) => {
                                                     return (
                                                         <tr key={key}>
                                                             <td><center>{key + 1}.</center></td>
-                                                            <td><center>{proj.duration}</center></td>
-                                                            <td><center>RM {nFormatter(proj.totalCost)}</center></td>
-                                                            <td><center>{proj.sourceOfTechnology}</center></td>
-                                                            {proj.vendor !== null ?
-                                                                <td><center>{this.getVendorCompany(proj.vendor)}</center></td>
-                                                                :
-                                                                <td><center>null</center></td>
-                                                            }
+                                                            <td><center>{proj.date}</center></td>
+                                                            <td><center>{proj.checklists}</center></td>
+                                                            <td><center>{proj.achievements}</center></td>
+                                                            <td><center>{proj.problems}</center></td>
                                                             <td className="td-actions text-right"><center>
                                                                 <OverlayTrigger placement="top" overlay={view}>
                                                                     <Link to={{
-                                                                        pathname: `/user/project-info/${proj.id}`,
+                                                                        pathname: `/admin/project-update/${proj.id}`,
                                                                     }}
                                                                     >
                                                                         <Button bsStyle="info" simple type="button" bsSize="large">
                                                                             <i className="fa fa-external-link" />
                                                                         </Button>
-
                                                                     </Link>
                                                                 </OverlayTrigger>
                                                                 <OverlayTrigger placement="top" overlay={remove}>
-                                                                    <Button bsStyle="danger" simple type="button" bsSize="large
-                                                                " onClick={() => this.deleteProject(proj.id)}>
+                                                                    <Button bsStyle="danger" simple type="button" bsSize="large" onClick={() => this.deleteProject(proj.id)}>
                                                                         <i className="fa fa-trash-o" />
                                                                     </Button>
                                                                 </OverlayTrigger>
@@ -670,7 +607,7 @@ class UserLighthouseDetails extends Component {
                 </Grid>
             </div>
         )
-    }
+    };
 };
 
-export default UserLighthouseDetails;
+export default AdminProjectDetails;

@@ -66,7 +66,7 @@ class UserAddLighthouseDetails extends Component {
             others: '',
             openDialog: false,
             dialogMessage: '',
-            color: null,
+            dialogColor: null,
             submitButton: 'Submit',
             disabled: false,
             editDisabled: false,
@@ -150,7 +150,7 @@ class UserAddLighthouseDetails extends Component {
                     others: '',
                     openDialog: true,
                     dialogMessage: 'Lighthouse details added',
-                    color: green[500],
+                    dialogColor: green[500],
                     submitButton: 'Submit'
                 })
             })
@@ -158,7 +158,7 @@ class UserAddLighthouseDetails extends Component {
                 this.setState({
                     openDialog: true,
                     dialogMessage: 'Lighthouse details failed to update',
-                    color: red[500],
+                    dialogColor: red[500],
                     submitButton: 'Submit'
                 })
             })
@@ -482,7 +482,7 @@ class UserAddLighthouseDetails extends Component {
                                         >
                                             <DialogContent>
                                                 <center>
-                                                    {this.state.color === green[500] ?
+                                                    {this.state.dialogColor === green[500] ?
                                                         <div className={classes.root}>
                                                             <CheckCircleOutlineOutlined className="fa" style={{ color: green[500], fontSize: 60 }} />
                                                         </div>

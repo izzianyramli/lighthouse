@@ -225,13 +225,13 @@ class UserLighthouse extends Component {
                                         >
                                             <DialogContent>
                                                 <center>
-                                                    {this.state.color === green[500] ?
+                                                    {this.state.dialogColor === green[500] ?
                                                         <div className={classes.root}>
-                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: this.state.color, fontSize: 60 }} />
+                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: green[500], fontSize: 60 }} />
                                                         </div>
                                                         :
                                                         <div>
-                                                            <CancelOutlined className="fa" style={{ color: this.state.color, fontSize: 60 }} />
+                                                            <CancelOutlined className="fa" style={{ color: red[500], fontSize: 60 }} />
                                                         </div>
                                                     }
                                                     <DialogContentText id="alert-dialog-description">

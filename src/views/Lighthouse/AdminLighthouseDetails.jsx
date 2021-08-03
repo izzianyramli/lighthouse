@@ -36,15 +36,10 @@ const projectInfo = [
     "Vendor",
 ];
 
-// const lighthouseId = Object.values(props.match.params)[0];
-
 function nFormatter(num) {
     if (num >= 1000000000000) {
         return (num / 1000000000000).toFixed(1).replace(/\.0$/, '') + 'T';
     }
-    // if (num >= 100000000) {
-    //     return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
-    // }
     if (num >= 1000000) {
         return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
     }
@@ -59,10 +54,7 @@ function getVendorCompany(vendorId) {
     console.log('vendorId: ', vendorId);
     axios.get(`/Company/${vendorId}`)
         .then(res => {
-            console.log(res.data.companyName);
-            // return `${res.data.companyName}`
             vendorName = res.data.companyName;
-            console.log(vendorName);
         })
         .catch(() => vendorName = "No vendor assigned")
     console.log("vendorName: ", vendorName);
@@ -86,11 +78,18 @@ class LighthouseDetails extends Component {
             others: '',
             openDialog: false,
             dialogMessage: '',
-            color: null,
+            dialogColor: null,
             submitButton: 'Submit',
             disabled: true,
             editDisabled: true,
             project: [],
+            starProductivity: 0,
+            starSustainability: 0,
+            starAgility: 0,
+            starSpeedToMarket: 0,
+            starCustomization: 0,
+            starRanking: 0,
+
         };
         this.handleLighthouseData = this.handleLighthouseData.bind(this);
     };
@@ -151,7 +150,7 @@ class LighthouseDetails extends Component {
                         others: '',
                         openDialog: true,
                         dialogMessage: 'Lighthouse details added',
-                        color: green[500],
+                        dialogColor: green[500],
                         submitButton: 'Submit'
                     })
                 })
@@ -159,7 +158,7 @@ class LighthouseDetails extends Component {
                     this.setState({
                         openDialog: true,
                         dialogMessage: 'Lighthouse details failed to update',
-                        color: red[500],
+                        dialogColor: red[500],
                         submitButton: 'Submit'
                     })
                 })
@@ -177,19 +176,44 @@ class LighthouseDetails extends Component {
                         others: '',
                         openDialog: true,
                         dialogMessage: 'Lighthouse details edited',
-                        color: green[500],
+                        dialogColor: green[500],
                         submitButton: 'Submit'
                     })
                 })
-                .catch((err) => {
+                .catch(() => {
                     this.setState({
                         openDialog: true,
                         dialogMessage: 'Lighthouse details failed to update',
-                        color: red[500],
+                        dialogColor: red[500],
                         submitButton: 'Edit details'
                     })
                 })
         }
+    }
+
+    handleAddStarRank(event, starProductivity, starSustainability, starAgility, starSpeedToMarket, starCustomization) {
+        let starRanking = 0;
+        starRanking = (starProductivity + starSustainability + starAgility + starSpeedToMarket + starCustomization) / 5;
+
+        const payload = {
+            starRanking: starRanking
+        }
+
+        axios.patch(`/Lighthouse/${this.state.lighthouseId}`, payload)
+            .then(() => {
+                this.setState({
+                    openDialog: true,
+                    dialogMessage: 'Lighthouse star rank updated',
+                    dialogColor: green[500],
+                })
+            })
+            .catch(() => {
+                this.setState({
+                    openDialog: true,
+                    dialogMessage: 'Lighthouse star rank failed to update',
+                    dialogColor: red[500],
+                })
+            })
     }
 
     handleLighthouseData() {
@@ -206,6 +230,7 @@ class LighthouseDetails extends Component {
                     others: res.data.others,
                     submitButton: 'Edit details',
                     project: res.data.projects,
+                    starRanking: res.data.starRanking,
                 });
                 if (res.data.company !== undefined) {
                     this.setState({
@@ -324,6 +349,33 @@ class LighthouseDetails extends Component {
                 label: 'Vendor'
             }
         ];
+
+        const starRanking = [
+            {
+                value: 0,
+                label: '0'
+            },
+            {
+                value: 1,
+                label: '1'
+            },
+            {
+                value: 2,
+                label: '2'
+            },
+            {
+                value: 3,
+                label: '3'
+            },
+            {
+                value: 4,
+                label: '4'
+            },
+            {
+                value: 5,
+                label: '5'
+            }
+        ]
 
         return (
             <div className="content">
@@ -544,13 +596,13 @@ class LighthouseDetails extends Component {
                                         >
                                             <DialogContent>
                                                 <center>
-                                                    {this.state.color === green[500] ?
+                                                    {this.state.dialogColor === green[500] ?
                                                         <div className={classes.root}>
-                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: this.state.color, fontSize: 60 }} />
+                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: green[500], fontSize: 60 }} />
                                                         </div>
                                                         :
                                                         <div>
-                                                            <CancelOutlined className="fa" style={{ color: this.state.color, fontSize: 60 }} />
+                                                            <CancelOutlined className="fa" style={{ color: red[500], fontSize: 60 }} />
                                                         </div>
                                                     }
                                                     <DialogContentText id="alert-dialog-description">
@@ -571,78 +623,111 @@ class LighthouseDetails extends Component {
                                 title="Star Ranking"
                                 content={
                                     <div>
-                                        <p>Star ranking</p>
+                                        <p>Current Star ranking: {this.state.starRanking}&nbsp;<i class="fa fa-star" style={{ color: 'orange' }}></i></p>
                                         <TextField
                                             onChange={(event) => this.handleChange(event)}
-                                            value={this.state.productivity}
+                                            value={this.state.starProductivity}
                                             label="Productivity "
-                                            name="productivity"
+                                            name="starProductivity"
                                             type="text"
                                             variant="outlined"
                                             style={{ margin: 8 }}
                                             fullWidth
-                                            disabled={this.state.disabled}
-                                        />
+                                            select
+                                        >
+                                            {starRanking.map((option) => (
+                                                <MenuItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
 
                                         <TextField
                                             onChange={(event) => this.handleChange(event)}
-                                            value={this.state.sustainability}
+                                            value={this.state.starSustainability}
                                             label="Sustainability"
-                                            name="sustainability"
+                                            name="starSustainability"
                                             type="text"
                                             variant="outlined"
                                             style={{ margin: 8 }}
                                             fullWidth
-                                            disabled={this.state.disabled}
-                                        />
+                                            select
+                                        >
+                                            {starRanking.map((option) => (
+                                                <MenuItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
 
                                         <TextField
                                             onChange={(event) => this.handleChange(event)}
-                                            value={this.state.agility}
+                                            value={this.state.starAgility}
                                             label="Agility"
-                                            name="agility"
+                                            name="starAgility"
                                             type="text"
                                             variant="outlined"
                                             style={{ margin: 8 }}
                                             fullWidth
-                                            disabled={this.state.disabled}
-                                        />
+                                            select
+                                        >
+                                            {starRanking.map((option) => (
+                                                <MenuItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
 
                                         <TextField
                                             onChange={(event) => this.handleChange(event)}
-                                            value={this.state.speedToMarket}
+                                            value={this.state.starSpeedToMarket}
                                             label="Speed to Market"
-                                            name="speedToMarket"
+                                            name="starSpeedToMarket"
                                             type="text"
                                             variant="outlined"
                                             style={{ margin: 8 }}
                                             fullWidth
-                                            disabled={this.state.disabled}
-                                        />
+                                            select
+                                        >
+                                            {starRanking.map((option) => (
+                                                <MenuItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
 
                                         <TextField
                                             onChange={(event) => this.handleChange(event)}
-                                            value={this.state.customization}
+                                            value={this.state.starCustomization}
                                             label="Customization"
-                                            name="customization"
+                                            name="starCustomization"
                                             type="text"
                                             variant="outlined"
                                             style={{ margin: 8 }}
                                             fullWidth
-                                            disabled={this.state.disabled}
-                                        />
-
-                                        <TextField
-                                            onChange={(event) => this.handleChange(event)}
-                                            value={this.state.others}
-                                            label="Others"
-                                            name="others"
-                                            type="text"
+                                            select
+                                        >
+                                            {starRanking.map((option) => (
+                                                <MenuItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                        <Button
+                                            color="primary"
                                             variant="outlined"
-                                            style={{ margin: 8 }}
-                                            fullWidth
-                                            disabled={this.state.disabled}
-                                        />
+                                            className={classes.button}
+                                            onClick={(event) => this.handleAddStarRank(
+                                                event,
+                                                this.state.starProductivity,
+                                                this.state.starSustainability,
+                                                this.state.starAgility,
+                                                this.state.starSpeedToMarket,
+                                                this.state.starCustomization
+                                            )}
+                                        >
+                                            Update star ranking
+                                        </Button>
                                     </div>
                                 }
                             />
@@ -732,11 +817,11 @@ class LighthouseDetails extends Component {
                                                 <center>
                                                     {this.state.dialogColor === green[500] ?
                                                         <div className={classes.root}>
-                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: this.state.dialogColor, fontSize: 60 }} />
+                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: green[500], fontSize: 60 }} />
                                                         </div>
                                                         :
                                                         <div>
-                                                            <CancelOutlined className="fa" style={{ color: this.state.dialogColor, fontSize: 60 }} />
+                                                            <CancelOutlined className="fa" style={{ color: red[500], fontSize: 60 }} />
                                                         </div>
                                                     }
                                                     <DialogContentText id="alert-dialog-description">

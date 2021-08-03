@@ -23,6 +23,7 @@ import CompanyList from 'views/Company/CompanyList';
 
 import CompanyDetails from 'views/Company/CompanyDetails';
 import ProjectDetails from 'views/Project/ProjectDetails';
+import AdminProjectDetails from 'views/Project/AdminProjectDetails';
 
 import AdminLighthouse from 'views/Lighthouse/AdminLighthouseProject';
 import UserLighthouse from 'views/Lighthouse/UserLighthouseProject';
@@ -33,6 +34,7 @@ import UserLighthouseDetails from 'views/Lighthouse/UserLighthouseDetails';
 
 import Account from "views/Account/Account";
 import ProjectUpdate from "views/Project/ProjectUpdate";
+import AdminProjectUpdate from "views/Project/AdminProjectUpdate";
 import AddProject from "views/Project/AddProject";
 
 const dashboardRoutes = [
@@ -88,7 +90,7 @@ const dashboardRoutes = [
     path: "/project-info/:projectid",
     name: "Project Details",
     icon: "pe-7s-note2",
-    component: ProjectDetails,
+    component: AdminProjectDetails,
     layout: "/admin",
     invisible: true,
   },
@@ -96,7 +98,7 @@ const dashboardRoutes = [
     path: "/project-update/:projectId",
     name: "Projects",
     icon: "pe-7s-server",
-    component: ProjectUpdate,
+    component: AdminProjectUpdate,
     layout: "/admin",
     invisible: true,
   },
