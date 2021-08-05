@@ -3,9 +3,6 @@ import {
     Grid,
     Row,
     Col,
-    Table,
-    OverlayTrigger,
-    Tooltip
 } from 'react-bootstrap';
 import Card from 'components/Card/Card';
 import {
@@ -26,18 +23,7 @@ import {
     Done,
     CancelOutlined,
     CheckCircleOutlineOutlined,
-    Add as AddIcon,
-    Edit as EditIcon,
 } from '@material-ui/icons';
-
-import { Link } from 'react-router-dom';
-
-const projectUpdates = [
-    "Date",
-    "Checklists",
-    "Achievements",
-    "Problems"
-]
 
 class ProjectDetails extends Component {
     constructor(props) {

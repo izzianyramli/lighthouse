@@ -70,7 +70,6 @@ class AdminDashboard extends Component {
     axios.get(`/Account/${user}`)
       .then((res) => {
         this.setState({ userProfile: res.data });
-        // console.log(this.state.userId, res.data.companyName);
       })
   };
 
@@ -168,65 +167,8 @@ class AdminDashboard extends Component {
     };
 
     // Data for pie chart
-    var locationsLegend = {
-      names: [
-        "Johor",
-        "Kuala Lumpur",
-        "Melaka",
-        "Negeri Sembilan",
-        "Penang",
-        "Selangor",
-        "Perak",
-        "Terengganu"
-      ],
-      colorType: [
-        "blue",
-        "red",
-        "green",
-        "purple",
-        "yellow",
-        "orange",
-        "brown",
-        "pink",
-      ],
-    };
-
     let pieCompanyLocation = {
       labels: ["Johor", "Kuala Lumpur", "Melaka", "Negeri Sembilan", "Penang", "Selangor", "Perak", "Terengganu"],
-      // series: [
-      //   {
-      //     value: this.state.locationJohor,
-      //     name: "Johor"
-      //   },
-      //   {
-      //     value: this.state.locationKualaLumpur,
-      //     name: "Kuala Lumpur"
-      //   },
-      //   {
-      //     value: this.state.locationMelaka,
-      //     name: "Melaka"
-      //   },
-      //   {
-      //     value: this.state.locationNegeriSembilan,
-      //     name: "Negeri Sembilan"
-      //   },
-      //   {
-      //     value: this.state.locationPenang,
-      //     name: "Penang"
-      //   },
-      //   {
-      //     value: this.state.locationSelangor,
-      //     name: "Selangor"
-      //   },
-      //   {
-      //     value: this.state.locationPerak,
-      //     name: "Perak"
-      //   },
-      //   {
-      //     value: this.state.locationTerengganu,
-      //     name: "Terengganu"
-      //   },
-      // ]
       series: [
         this.state.locationJohor,
         this.state.locationKualaLumpur,
@@ -253,9 +195,7 @@ class AdminDashboard extends Component {
         labelDirection: 'explode',
         labelInterpolationFnc: function (value) {
           return value;
-          // return Math.round(value / pieCompanyLocation.series.reduce(sum) * 100) + '%';
         },
-
       }],
       ['screen and (min-width: 1024px)', {
         labelOffset: 80,
@@ -321,9 +261,6 @@ class AdminDashboard extends Component {
                     />
                   </div>
                 }
-              // legend={
-              //   <div className="legend">{this.createLegend(sourceLegend)}</div>
-              // }
               />
             </Col>
             <Col md={4}>
@@ -345,9 +282,6 @@ class AdminDashboard extends Component {
                     />
                   </div>
                 }
-                // legend={
-                //   <div className="legend">{this.createLegend(locationsLegend)}</div>
-                // }
               />
             </Col>
           </Row>

@@ -3,9 +3,6 @@ import {
     Grid,
     Row,
     Col,
-    Table,
-    OverlayTrigger,
-    Tooltip,
 } from 'react-bootstrap';
 import Card from 'components/Card/Card';
 import {
@@ -25,30 +22,6 @@ import {
     CancelOutlined,
     CheckCircleOutlineOutlined,
 } from '@material-ui/icons';
-import { Link } from 'react-router-dom';
-
-const projectInfo = [
-    "Duration",
-    "Total Cost",
-    "Source of Technology",
-    "Vendor",
-];
-
-function nFormatter(num) {
-    if (num >= 1000000000000) {
-        return (num / 1000000000000).toFixed(1).replace(/\.0$/, '') + 'T';
-    }
-    // if (num >= 100000000) {
-    //     return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
-    // }
-    if (num >= 1000000) {
-        return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-    }
-    if (num > 1000) {
-        return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-    }
-    return num;
-};
 
 class UserAddLighthouseDetails extends Component {
     constructor(props) {
@@ -199,13 +172,10 @@ class UserAddLighthouseDetails extends Component {
     };
 
     getVendorCompany(vendorId) {
-        console.log('vendorId: ', vendorId);
         var vendorName = "";
         axios.get(`/Company/${vendorId}`)
             .then(res => {
-                console.log(res.data.companyName);
                 vendorName = res.data.companyName;
-                console.log('vendorName: ', vendorName);
                 return (vendorName);
             })
     }

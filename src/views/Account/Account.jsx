@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Grid, Row, Col, Table, OverlayTrigger, Tooltip, Modal } from 'react-bootstrap';
-// import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import Card from 'components/Card/Card';
 import axios from 'axios';
 import Button from "components/CustomButton/CustomButton";
@@ -12,7 +11,6 @@ const accountInfo = [
     "First Name",
     "Last Name",
     "Company",
-    // "Division",
     "Email",
     "Approval",
     "Access Type"
@@ -37,6 +35,7 @@ class Account extends Component {
             dialogColor: null,
             showEditModal: false,
         };
+        this.fetchUser = this.fetchUser.bind(this);
     };
 
     componentDidMount() {
@@ -70,7 +69,6 @@ class Account extends Component {
     }
 
     updateAccount(userId, userApproval, userType) {
-        console.log(userId, userApproval, userType);
         const payload = {
             approval: userApproval,
             accountType: userType

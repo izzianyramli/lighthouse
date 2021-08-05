@@ -27,7 +27,7 @@ class ProjectUpdate extends Component {
         this.setState({
             [event.target.name]: event.target.value
         });
-    };
+    }
 
     handleSubmit(
         event,
@@ -45,7 +45,6 @@ class ProjectUpdate extends Component {
             achievements: achievements,
             problems: problems,
         };
-        console.log(payload);
         axios.post('/ProjectUpdate', payload)
             .then(() => {
                 this.clearForm();
@@ -60,7 +59,7 @@ class ProjectUpdate extends Component {
             problems: "",
             files: null,
         });
-    };
+    }
 
     render() {
 

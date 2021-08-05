@@ -51,13 +51,11 @@ function nFormatter(num) {
 
 function getVendorCompany(vendorId) {
     var vendorName = "";
-    console.log('vendorId: ', vendorId);
     axios.get(`/Company/${vendorId}`)
         .then(res => {
             vendorName = res.data.companyName;
         })
         .catch(() => vendorName = "No vendor assigned")
-    console.log("vendorName: ", vendorName);
     return vendorName;
 };
 
@@ -192,6 +190,7 @@ class LighthouseDetails extends Component {
     }
 
     handleAddStarRank(event, starProductivity, starSustainability, starAgility, starSpeedToMarket, starCustomization) {
+        event.preventDefault();
         let starRanking = 0;
         starRanking = (starProductivity + starSustainability + starAgility + starSpeedToMarket + starCustomization) / 5;
 

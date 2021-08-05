@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Grid, Row, Col } from "react-bootstrap";
-import { Card } from "components/Card/Card.jsx";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
-import { Tasks } from "components/Tasks/Tasks.jsx";
 import axios from 'axios';
 import UserLighthouse from "views/Lighthouse/UserLighthouseProject";
 
@@ -148,24 +146,13 @@ class UserDashboard extends Component {
 
             </Col>
             <Col lg={4} sm={6}>
-              {/* {project.projectUpdate !== undefined ? */}
               <StatsCard
-                bigIcon={<i className="pe-7s-check text-success"></i>
-                }
+                bigIcon={<i className="pe-7s-check text-success"></i>}
                 statsText="Progress tasks"
                 statsValue={projectUpdates}
                 statsIcon={<i className="fa fa-refresh" />}
                 statsIconText={timePassed}
               />
-              {/* :
-                <StatsCard
-                  bigIcon={<i className="pe-7s-check text-success" />}
-                  statsText="Progress Tasks"
-                  statsValue="0"
-                  statsIcon={<i className="fa fa-refresh" />}
-                  statsIconText={timePassed}
-                /> */}
-              {/* } */}
             </Col>
             <Col lg={5} sm={6}>
               <StatsCard
@@ -178,22 +165,6 @@ class UserDashboard extends Component {
             </Col>
           </Row>
           <UserLighthouse />
-          {/* <Row>
-            <Col>
-              <Card
-                title="Companies involved"
-                stats={timePassed}
-                statsIcon={<i className="fa fa-refresh" />}
-                content={
-                  <div className="table-full-width">
-                    <table className="table">
-                      <Tasks />
-                    </table>
-                  </div>
-                }
-              />
-            </Col>
-          </Row> */}
         </Grid>
       </div >
     );

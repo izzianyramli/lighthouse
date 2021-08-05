@@ -154,7 +154,6 @@ class AdminProjectDetails extends Component {
     handleProjectData() {
         axios.get(`/Project/${this.state.projectId}`)
             .then(res => {
-                console.log(res.data);
                 this.setState({
                     companyId: res.data.lighthouse.owner,
                     // companyName: red.data.owner.companyName,

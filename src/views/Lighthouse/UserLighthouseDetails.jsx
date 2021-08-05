@@ -250,17 +250,12 @@ class UserLighthouseDetails extends Component {
     };
 
     getVendorCompany(vendorId) {
-        console.log('vendorId: ', vendorId);
         var vendorName = "";
         axios.get(`/Company/${vendorId}`)
             .then(res => {
-                console.log(res.data.companyName);
                 vendorName = res.data.companyName;
-                console.log('vendorName: ', vendorName);
                 return (vendorName);
             })
-        // console.log('vendorName: ', vendorName);
-        // return vendorName;
     }
 
     render() {

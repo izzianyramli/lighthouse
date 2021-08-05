@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import { Dialog, DialogContent, DialogContentText, makeStyles, Button } from '@material-ui/core';
 import { green, red } from '@material-ui/core/colors';
 import { CancelOutlined, CheckCircleOutlineOutlined, Add as AddIcon } from '@material-ui/icons';
-import io from 'assets/sailsSocket';
 
 const lighthouseInfo = [
     "Model",
@@ -56,7 +55,6 @@ class UserLighthouse extends Component {
             .then((res) => {
                 this.setState({ userProfile: res.data });
                 this.fetchCompanyData(res.data.companyName);
-                // console.log(res.data.companyName);
             })
     }
 
@@ -69,7 +67,6 @@ class UserLighthouse extends Component {
                         lighthouseId: res.data[0].lighthouseDetails.id,
                         lighthouse: res.data[0].lighthouseDetails,
                     });
-                // console.log(res.data[0]);
             })
             .catch(err => console.log('Error fetching company data: ', err));
     };

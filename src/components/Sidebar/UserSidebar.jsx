@@ -47,6 +47,7 @@ class UserSidebar extends Component {
         <div className="sidebar-wrapper">
           <ul className="nav">
             {this.state.width <= 991 ? <UserNavbarLinks /> : null}
+            {/* eslint-disable-next-line */}
             {this.props.routes.map((prop, key) => {
               if (!prop.redirect)
                 if (prop.layout === '/user') {

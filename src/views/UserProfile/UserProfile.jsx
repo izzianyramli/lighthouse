@@ -20,9 +20,6 @@ import {
   Grid,
   Row,
   Col,
-  FormGroup,
-  ControlLabel,
-  FormControl
 } from "react-bootstrap";
 
 import { Card } from "components/Card/Card.jsx";
@@ -53,7 +50,6 @@ class UserProfile extends Component {
     axios.get(`/Account/${this.state.userId}`)
       .then((res) => {
         this.setState({ userProfile: res.data });
-        console.log(this.state.userProfile);
       })
       .catch((err) => console.error('error to fetch user profile', err))
   }
