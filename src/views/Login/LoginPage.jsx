@@ -50,7 +50,8 @@ class LoginPage extends Component {
         axios.post('/login', payload)
             .then((res) => {
                 this.setState({ success: res.data.user });
-                // if (res.data.user.approval === true) {
+                console.log(res.data.user)
+                if (res.data.user.approval === true) {
                     if (res.data.user.accountType === "user") {
                         this.setState({ errorMessage: null });
                         localStorage.setItem('userId', res.data.user.id);
@@ -62,9 +63,9 @@ class LoginPage extends Component {
                     } else {
                         this.setState({ errorMessage: res.data.message.message });
                     }
-                // } else {
-                //     this.setState({ errorMessage: 'Account is not approve yet' });
-                // }
+                } else {
+                    this.setState({ errorMessage: 'Account is not approved yet' });
+                }
 
             })
             .catch(() => {
