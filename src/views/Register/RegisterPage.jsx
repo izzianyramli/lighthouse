@@ -45,6 +45,12 @@ class RegisterPage extends Component {
         });
     }
 
+    handleCheckboxClick(event) {
+        this.setState({
+            [event.target.name]: event.target.checked,
+        });
+    }
+
     submitAccountDetails(
         event,
         firstName,
@@ -53,6 +59,7 @@ class RegisterPage extends Component {
         division,
         email,
         password,
+        confirmPassword,
         policy
     ) {
         event.preventDefault();
@@ -66,11 +73,19 @@ class RegisterPage extends Component {
             policy: policy
         };
 
-        axios.post('/Account', payload)
+        if (confirmPassword != password){
+            console.log('password does not match');
+        }
+        else if (policy == false){
+            console.log('checkbox not checked');
+        }
+        else{
+            axios.post('/Account', payload)
             .then(() => {
                 this.gotoRegisterSuccess('/register-success');
             })
             .catch(err => console.log('registration failed, err: ', err));
+        }
     };
 
     getCompanyRegistered() {
@@ -185,9 +200,13 @@ class RegisterPage extends Component {
                                                         value: this.state.password
                                                     },
                                                     {
+                                                        label: "Confirm Password",
+                                                        name: "confirmPassword",
                                                         type: "password",
                                                         bsClass: "form-control",
-                                                        placeholder: "Re-enter password"
+                                                        placeholder: "Re-enter password",
+                                                        onChange: (event) => this.handleChange(event),
+                                                        value: this.state.confirmPassword
                                                     },
                                                 ]}
                                             />
@@ -198,6 +217,7 @@ class RegisterPage extends Component {
                                                 number={1}
                                                 label={`I have read and agree with the Terms and Conditions`}
                                                 inline={false}
+                                                handleCheckboxClick={(event) => this.handleCheckboxClick(event)}
                                             />
                                         </form>
                                         <h5>Already have an account? <Link to="/login">Login here</Link></h5>
@@ -215,6 +235,7 @@ class RegisterPage extends Component {
                                                 this.state.division,
                                                 this.state.email,
                                                 this.state.password,
+                                                this.state.confirmPassword,
                                                 this.state.policy
                                             )}
                                         >
