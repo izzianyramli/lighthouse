@@ -53,6 +53,7 @@ class RegisterPage extends Component {
         division,
         email,
         password,
+        confirmPassword,
         policy
     ) {
         event.preventDefault();
@@ -66,11 +67,16 @@ class RegisterPage extends Component {
             policy: policy
         };
 
-        axios.post('/Account', payload)
+        if (confirmPassword != password){
+            console.log('password does not match');
+        }
+        else{
+            axios.post('/Account', payload)
             .then(() => {
                 this.gotoRegisterSuccess('/register-success');
             })
             .catch(err => console.log('registration failed, err: ', err));
+        }
     };
 
     getCompanyRegistered() {
@@ -185,9 +191,13 @@ class RegisterPage extends Component {
                                                         value: this.state.password
                                                     },
                                                     {
+                                                        label: "Confirm Password",
+                                                        name: "confirmPassword",
                                                         type: "password",
                                                         bsClass: "form-control",
-                                                        placeholder: "Re-enter password"
+                                                        placeholder: "Re-enter password",
+                                                        onChange: (event) => this.handleChange(event),
+                                                        value: this.state.confirmPassword
                                                     },
                                                 ]}
                                             />
@@ -215,6 +225,7 @@ class RegisterPage extends Component {
                                                 this.state.division,
                                                 this.state.email,
                                                 this.state.password,
+                                                this.state.confirmPassword,
                                                 this.state.policy
                                             )}
                                         >
