@@ -45,6 +45,12 @@ class RegisterPage extends Component {
         });
     }
 
+    handleCheckboxClick(event) {
+        this.setState({
+            [event.target.name]: event.target.checked,
+        });
+    }
+
     submitAccountDetails(
         event,
         firstName,
@@ -69,6 +75,9 @@ class RegisterPage extends Component {
 
         if (confirmPassword != password){
             console.log('password does not match');
+        }
+        else if (policy == false){
+            console.log('checkbox not checked');
         }
         else{
             axios.post('/Account', payload)
@@ -208,6 +217,7 @@ class RegisterPage extends Component {
                                                 number={1}
                                                 label={`I have read and agree with the Terms and Conditions`}
                                                 inline={false}
+                                                handleCheckboxClick={(event) => this.handleCheckboxClick(event)}
                                             />
                                         </form>
                                         <h5>Already have an account? <Link to="/login">Login here</Link></h5>
