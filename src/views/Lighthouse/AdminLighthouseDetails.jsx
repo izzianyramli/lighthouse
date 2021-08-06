@@ -745,19 +745,20 @@ class LighthouseDetails extends Component {
                                         &nbsp;
                                         &nbsp;
                                         &nbsp;
-                                        <Link to={{
+                                        {/* <Link to={{
                                             pathname: `/admin/project-info/`
-                                        }}>
+                                        }}> */}
                                             <Button
                                                 color="primary"
                                                 variant="outlined"
                                                 className={classes.button}
-                                                onClick={() => this.handleAddProject()}
+                                                // onClick={() => this.handleAddProject()}
+                                                href={`/admin/add-project/${this.state.lighthouseId}`}
                                             >
                                                 <AddIcon /> &nbsp;
                                                 Add New Project
                                             </Button>
-                                        </Link>
+                                        {/* </Link> */}
 
                                         <br />
                                         <Table striped hover>
