@@ -37,7 +37,7 @@ class RegisterPage extends Component {
 
     gotoRegisterSuccess(path) {
         this.props.history.push(path);
-    };
+    }
 
     handleChange(event) {
         this.setState({
@@ -73,10 +73,10 @@ class RegisterPage extends Component {
             policy: policy
         };
 
-        if (confirmPassword != password){
+        if (confirmPassword !== password){
             console.log('password does not match');
         }
-        else if (policy == false){
+        else if (policy === false){
             console.log('checkbox not checked');
         }
         else{
