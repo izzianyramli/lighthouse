@@ -50,7 +50,6 @@ class LoginPage extends Component {
         axios.post('/login', payload)
             .then((res) => {
                 this.setState({ success: res.data.user });
-                console.log(res.data.user)
                 if (res.data.user.approval === true) {
                     if (res.data.user.accountType === "user") {
                         this.setState({ errorMessage: null });
