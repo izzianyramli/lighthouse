@@ -95,6 +95,14 @@ const dashboardRoutes = [
     invisible: true,
   },
   {
+    path: "/add-project/:lighthouseid",
+    name: "Add Project",
+    icon: "pe-7s-note2",
+    component: AddProject,
+    layout: "/admin",
+    invisible: true,
+  },
+  {
     path: "/project-update/:projectId",
     name: "Projects",
     icon: "pe-7s-server",
