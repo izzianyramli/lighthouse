@@ -557,7 +557,7 @@ class ProjectDetails extends Component {
                                                             <td className="td-actions text-right"><center>
                                                                 <OverlayTrigger placement="top" overlay={view}>
                                                                     <Link to={{
-                                                                        pathname: `/admin/project-update/${proj.id}`,
+                                                                        pathname: `/user/project-update/${proj.id}`,
                                                                     }}
                                                                     >
                                                                         <Button bsStyle="info" simple type="button" bsSize="large">
