@@ -98,11 +98,12 @@ class UserProfile extends Component {
         this.fetchUserInfo();
       })
       .catch(() => {
-          this.setState({
-            openDialog: true,
-            dialogMessage: 'Account details failed to update',
-            dialogColor: red[500],
-          })
+        this.setState({
+          openDialog: true,
+          dialogMessage: 'Account details failed to update',
+          dialogColor: red[500],
+        })
+        this.fetchUserInfo();
       })
     }
 
