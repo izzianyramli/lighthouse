@@ -50,22 +50,23 @@ class LoginPage extends Component {
         axios.post('/login', payload)
             .then((res) => {
                 this.setState({ success: res.data.user });
-                if (res.data.user.approval === true) {
-                    if (res.data.user.accountType === "user") {
-                        this.setState({ errorMessage: null });
-                        localStorage.setItem('userId', res.data.user.id);
-                        this.gotoDashboard(`/user/dashboard`);
-                    } else if (res.data.user.accountType === "admin") {
-                        this.setState({ errorMessage: null });
-                        localStorage.setItem('userId', res.data.user.id);
-                        this.gotoDashboard(`/admin/dashboard`);
+                if (res.data.user) {
+                    if (res.data.user.approval === true) {
+                        if (res.data.user.accountType === "user") {
+                            this.setState({ errorMessage: null });
+                            localStorage.setItem('userId', res.data.user.id);
+                            this.gotoDashboard(`/user/dashboard`);
+                        } else if (res.data.user.accountType === "admin") {
+                            this.setState({ errorMessage: null });
+                            localStorage.setItem('userId', res.data.user.id);
+                            this.gotoDashboard(`/admin/dashboard`);
+                        }
                     } else {
-                        this.setState({ errorMessage: res.data.message.message });
+                        this.setState({ errorMessage: 'Account is not approved yet' });
                     }
                 } else {
-                    this.setState({ errorMessage: 'Account is not approved yet' });
+                    this.setState({ errorMessage: res.data.message.message });
                 }
-
             })
             .catch(() => {
                 this.setState({ success: null, errorMessage: "Cannot login.\nInternal server error" });
