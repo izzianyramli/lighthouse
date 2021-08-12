@@ -174,6 +174,7 @@ class CompanyList extends Component {
                     dialogMessage: 'Company details deleted',
                     dialogColor: green[500],
                 })
+                this.fetchCompanyData();
             })
             .catch(() => {
                 this.setState({
@@ -181,6 +182,7 @@ class CompanyList extends Component {
                     dialogMessage: 'Failed to delete company',
                     dialogColor: red[500],
                 })
+                this.fetchCompanyData();
             })
     };
 
