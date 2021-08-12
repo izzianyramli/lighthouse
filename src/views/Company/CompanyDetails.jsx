@@ -94,7 +94,7 @@ class CompanyDetails extends Component {
             status: status,
             engagementStatus: engagementStatus
         };
-        // if (this.state.submitButton === 'Submit') {
+
         if (this.state.companyId === undefined) {
             axios.post('/Company', payload)
                 .then(() => {
@@ -129,23 +129,12 @@ class CompanyDetails extends Component {
             axios.patch(`/Company/${this.state.companyId}`, payload)
                 .then(() => {
                     this.setState({
-                        companyName: '',
-                        registrationNumber: '',
-                        contactPerson: '',
-                        designation: '',
-                        contactNumber: '',
-                        email: '',
-                        location: '',
-                        typeCompany: '',
-                        productActivity: '',
-                        industryDivision: '',
-                        status: '',
-                        engagementStatus: '',
                         openDialog: true,
                         dialogMessage: 'Company details edited',
                         dialogColor: green[500],
                         submitButton: 'Submit'
                     })
+                    this.handleCompanyData();
                 })
                 .catch(() => {
                     this.setState({
@@ -154,6 +143,7 @@ class CompanyDetails extends Component {
                         dialogColor: red[500],
                         submitButton: 'Edit details'
                     })
+                    this.handleCompanyData();
                 })
         }
     }
@@ -185,25 +175,6 @@ class CompanyDetails extends Component {
             disabled: false,
             submitButton: 'Edit details'
         });
-    }
-
-    handleAddDetails() {
-        this.setState({
-            companyName: '',
-            registrationNumber: '',
-            contactPerson: '',
-            designation: '',
-            contactNumber: '',
-            email: '',
-            location: '',
-            typeCompany: '',
-            productActivity: '',
-            industryDivision: '',
-            status: '',
-            engagementStatus: '',
-            submitButton: 'Submit',
-            disabled: false,
-        })
     }
 
     render() {
