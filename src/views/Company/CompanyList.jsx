@@ -53,12 +53,8 @@ const companyInfo = [
 
 const division = [
     {
-        value: null,
-        label: 'None'
-    },
-    {
-        value: 'Advanced Technology and Research Development',
-        label: 'Advanced Technology and Research Development'
+        value: 'Advanced Technology and Research & Development',
+        label: 'Advanced Technology and Research & Development'
     },
     {
         value: 'Building Technology and Lifestyle',
@@ -118,7 +114,7 @@ class CompanyList extends Component {
             openDialog: false,
             dialogMessage: '',
             dialogColor: null,
-            companyDivision: null,
+            companyDivision: '',
         };
         this.fetchCompanyData = this.fetchCompanyData.bind(this);
         this.updateCompanyData = this.updateCompanyData.bind(this);
@@ -139,13 +135,13 @@ class CompanyList extends Component {
     }
 
     fetchCompanyData() {
-        if (this.state.companyDivision !== null) {
-            axios.get(`/company?industryDivision=${this.state.companyDivision}`)
+        if (this.state.companyDivision !== '') {
+            axios.get(`/company?industryDivision=${encodeURIComponent(this.state.companyDivision)}`)
                 .then(company => {
                     this.setState({ company: company.data });
                 })
                 .catch(() => {
-                    this.setState({ companyDivision: null });
+                    this.setState({ companyDivision: '' });
                 });
         } else {
             axios.get('/Company')
@@ -178,6 +174,7 @@ class CompanyList extends Component {
                     dialogMessage: 'Company details deleted',
                     dialogColor: green[500],
                 })
+                this.fetchCompanyData();
             })
             .catch(() => {
                 this.setState({
@@ -185,17 +182,16 @@ class CompanyList extends Component {
                     dialogMessage: 'Failed to delete company',
                     dialogColor: red[500],
                 })
+                this.fetchCompanyData();
             })
     };
 
     handleClick() {
-        this.setState({ companyDivision: null });
-        this.fetchCompanyData();
+        this.setState({ companyDivision: '' });
     };
 
     handleChange(event) {
         this.setState({ companyDivision: event.target.value, });
-        this.fetchCompanyData();
     }
 
     render() {
