@@ -70,7 +70,6 @@ class RegisterPage extends Component {
             division: division,
             email: email,
             password: password,
-            policy: policy
         };
 
         if (confirmPassword !== password){
