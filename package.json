@@ -26,7 +26,7 @@
     "socket.io-client": "^3.1.1",
     "store": "^2.0.12"
   },
-  "proxy": "http://localhost:1337",
+  "proxy": "https://localhost:1337",
   "devDependencies": {
     "@types/googlemaps": "3.30.19",
     "@types/markerclustererplus": "2.1.33",
@@ -35,7 +35,7 @@
     "typescript": "3.4.3"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "export HTTPS=true&&SSL_CRT_FILE=cert.pem&&SSL_KEY_FILE=key.pem react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
