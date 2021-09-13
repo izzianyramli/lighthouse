@@ -72,8 +72,13 @@ class RegisterPage extends Component {
             password: password,
         };
 
+        let passCheck = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/;
+
         if (confirmPassword !== password){
             console.log('password does not match');
+        }
+        else if (!password.match(passCheck)){
+            console.log('invalid password');
         }
         else if (policy === false){
             console.log('checkbox not checked');
@@ -209,6 +214,7 @@ class RegisterPage extends Component {
                                                     },
                                                 ]}
                                             />
+                                            <h7>Password must contain at least 1 number and 1 special character, and between 8 to 16 characters</h7><br />
                                             <CustomCheckbox
                                                 isChecked={this.state.policy}
                                                 value={this.state.policy}
