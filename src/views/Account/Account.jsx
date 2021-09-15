@@ -81,6 +81,7 @@ class Account extends Component {
                     dialogColor: green[500],
                     showEditModal: false,
                 });
+                this.fetchUser();
             })
             .catch(() => {
                 this.setState({
@@ -88,6 +89,7 @@ class Account extends Component {
                     dialogMessage: 'Failed to update user account',
                     dialogColor: red[500],
                 })
+                this.fetchUser();
             })
     }
 
