@@ -45,21 +45,22 @@ class ProjectUpdate extends Component {
     ) {
         event.preventDefault();
         const payload = {
-            project: this.state.projectId,
             date: date,
             checklists: checklists,
             achievements: achievements,
             problems: problems,
         };
-        axios.post('/ProjectUpdate', payload)
+        axios.patch(`/ProjectUpdate/${this.state.projectUpdateId}`, payload)
             .then(() => {
                 this.clearForm();
+                this.handleProjectUpdateData();
             });
     }
 
     handleProjectUpdateData() {
         axios.get(`/ProjectUpdate/${this.state.projectUpdateId}`)
             .then(res => {
+                console.log(res.data)
                 this.setState({
                     date: res.data.date,
                     checklists: res.data.checklists,
