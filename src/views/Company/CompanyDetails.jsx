@@ -148,6 +148,11 @@ class CompanyDetails extends Component {
         }
     }
 
+    handleCancel() {
+        this.setState({ disabled: true })
+        this.handleCompanyData();
+    }
+
     handleCompanyData() {
         axios.get(`/Company/${this.state.companyId}`)
             .then(res => {
@@ -541,7 +546,7 @@ class CompanyDetails extends Component {
                                             className={classes.button}
                                             variant="outlined"
                                             color="default"
-                                            onClick={() => this.setState({ disabled: true })}
+                                            onClick={() => this.handleCancel()}
                                         >
                                             Cancel
                                         </Button>

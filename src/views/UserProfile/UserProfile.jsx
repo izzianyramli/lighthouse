@@ -107,6 +107,11 @@ class UserProfile extends Component {
       })
     }
 
+  handleCancel() {
+    this.setState({ disabled: true, editProfile: false, })
+    this.fetchUserInfo();
+  }
+
   fetchUserInfo() {
     axios.get(`/Account/${this.state.userId}`)
       .then((res) => {
@@ -142,7 +147,7 @@ class UserProfile extends Component {
     if (this.state.editProfile) {
       buttons = 
       <React.Fragment>
-        <Button bsStyle="default" pullRight fill onClick={() => this.setState({ disabled: true, editProfile: false, })}>
+        <Button bsStyle="default" pullRight fill onClick={() => this.handleCancel()}>
           Cancel
         </Button>
         &nbsp;
