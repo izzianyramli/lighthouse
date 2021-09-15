@@ -79,6 +79,8 @@ class UserLighthouse extends Component {
                     dialogMessage: 'Lighthouse project deleted',
                     dialogColor: green[500],
                 });
+                const userId = localStorage.getItem("userId");
+                this.fetchUserData(userId);
             })
             .catch(() => {
                 this.setState({
@@ -86,6 +88,8 @@ class UserLighthouse extends Component {
                     dialogMessage: 'Failed to delete lighthouse project',
                     dialogColor: red[500],
                 })
+                const userId = localStorage.getItem("userId");
+                this.fetchUserData(userId);
             })
     };
 

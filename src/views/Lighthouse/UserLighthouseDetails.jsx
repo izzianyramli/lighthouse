@@ -239,6 +239,7 @@ class UserLighthouseDetails extends Component {
                     dialogMessage: 'Project details deleted',
                     dialogColor: green[500]
                 });
+                this.handleLighthouseData();
             })
             .catch(() => {
                 this.setState({
@@ -246,6 +247,7 @@ class UserLighthouseDetails extends Component {
                     dialogMessage: 'Failed to delete project',
                     dialogColor: red[500],
                 })
+                this.handleLighthouseData();
             })
     };
 
