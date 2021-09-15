@@ -153,18 +153,24 @@ class ProjectDetails extends Component {
 
     handleProjectData() {
         axios.get(`/Project/${this.state.projectId}`)
-            .then(res => {
-                console.log(res.data);
+            .then(res_project => {
+                console.log(res_project.data);
+                axios.get(`/Company/${res_project.data.lighthouse.company}`)
+                    .then((res_company) => {
+                        this.setState({
+                            companyId: res_company.data.id,
+                            companyName: res_company.data.companyName,
+                        })
+                    })
+
                 this.setState({
-                    companyId: res.data.lighthouse.owner,
-                    // companyName: red.data.owner.companyName,
-                    duration: res.data.duration,
-                    totalCost: res.data.totalCost,
-                    sourceOfTechnology: res.data.sourceOfTechnology,
-                    detailsOfTechnology: res.data.detailsOfTechnology,
-                    facilitationNeeded: res.data.facilitationNeeded,
+                    duration: res_project.data.duration,
+                    totalCost: res_project.data.totalCost,
+                    sourceOfTechnology: res_project.data.sourceOfTechnology,
+                    detailsOfTechnology: res_project.data.detailsOfTechnology,
+                    facilitationNeeded: res_project.data.facilitationNeeded,
                     submitButton: 'Edit details',
-                    projectUpdates: res.data.projectUpdate
+                    projectUpdates: res_project.data.projectUpdate
                 });
             })
             .catch(err => console.log('error project data: ', err))
@@ -189,6 +195,26 @@ class ProjectDetails extends Component {
             submitButton: 'Submit',
             disabled: false,
         })
+    }
+
+    deleteProjectUpdate(projectUpdateId) {
+        axios.delete(`/ProjectUpdate/${projectUpdateId}`)
+            .then(() => {
+                this.setState({
+                    openDialog: true,
+                    dialogMessage: 'Project details deleted',
+                    dialogColor: green[500]
+                });
+                this.handleProjectData();
+            })
+            .catch(() => {
+                this.setState({
+                    openDialog: true,
+                    dialogMessage: 'Failed to delete project',
+                    dialogColor: red[500],
+                })
+                this.handleProjectData();
+            })
     }
 
     render() {
@@ -324,7 +350,7 @@ class ProjectDetails extends Component {
                                         </Button>
                                         &nbsp;
                                         <Link to={{
-                                            pathname: `/user/project-update/${this.state.projectId}`
+                                            pathname: `/user/add-project-update/${this.state.projectId}`
                                         }}>
                                             <Button
                                                 color="primary"
@@ -546,18 +572,18 @@ class ProjectDetails extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {this.state.projectUpdates && this.state.projectUpdates.map((proj, key) => {
+                                                {this.state.projectUpdates && this.state.projectUpdates.map((projUpd, key) => {
                                                     return (
                                                         <tr key={key}>
                                                             <td><center>{key + 1}.</center></td>
-                                                            <td><center>{proj.date}</center></td>
-                                                            <td><center>{proj.checklists}</center></td>
-                                                            <td><center>{proj.achievements}</center></td>
-                                                            <td><center>{proj.problems}</center></td>
+                                                            <td><center>{projUpd.date}</center></td>
+                                                            <td><center>{projUpd.checklists}</center></td>
+                                                            <td><center>{projUpd.achievements}</center></td>
+                                                            <td><center>{projUpd.problems}</center></td>
                                                             <td className="td-actions text-right"><center>
                                                                 <OverlayTrigger placement="top" overlay={view}>
                                                                     <Link to={{
-                                                                        pathname: `/user/project-update/${proj.id}`,
+                                                                        pathname: `/user/project-update/${projUpd.id}`,
                                                                     }}
                                                                     >
                                                                         <Button bsStyle="info" simple type="button" bsSize="large">
@@ -566,7 +592,7 @@ class ProjectDetails extends Component {
                                                                     </Link>
                                                                 </OverlayTrigger>
                                                                 <OverlayTrigger placement="top" overlay={remove}>
-                                                                    <Button bsStyle="danger" simple type="button" bsSize="large" onClick={() => this.deleteProject(proj.id)}>
+                                                                    <Button bsStyle="danger" simple type="button" bsSize="large" onClick={() => this.deleteProjectUpdate(projUpd.id)}>
                                                                         <i className="fa fa-trash-o" />
                                                                     </Button>
                                                                 </OverlayTrigger>

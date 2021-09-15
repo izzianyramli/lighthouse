@@ -33,7 +33,8 @@ import AdminLighthouseDetails from 'views/Lighthouse/AdminLighthouseDetails';
 import UserLighthouseDetails from 'views/Lighthouse/UserLighthouseDetails';
 
 import Account from "views/Account/Account";
-import ProjectUpdate from "views/Project/ProjectUpdate";
+import ProjectUpdateDetails from "views/Project/ProjectUpdateDetails";
+import AddProjectUpdate from "views/Project/AddProjectUpdate";
 import AdminProjectUpdate from "views/Project/AdminProjectUpdate";
 import AddProject from "views/Project/AddProject";
 
@@ -159,10 +160,18 @@ const dashboardRoutes = [
     invisible: true,
   },
   {
-    path: "/project-update/:projectId",
+    path: "/add-project-update/:projectId",
     name: "Projects",
     icon: "pe-7s-server",
-    component: ProjectUpdate,
+    component: AddProjectUpdate,
+    layout: "/user",
+    invisible: true,
+  },
+  {
+    path: "/project-update/:projectUpdateId",
+    name: "Project Updates",
+    icon: "pe-7s-server",
+    component: ProjectUpdateDetails,
     layout: "/user",
     invisible: true,
   },
