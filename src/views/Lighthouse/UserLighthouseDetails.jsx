@@ -187,6 +187,7 @@ class UserLighthouseDetails extends Component {
                         dialogColor: green[500],
                         submitButton: 'Submit'
                     })
+                    this.handleLighthouseData();
                 })
                 .catch(() => {
                     this.setState({
