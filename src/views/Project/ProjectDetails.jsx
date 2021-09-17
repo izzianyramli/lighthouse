@@ -51,8 +51,10 @@ class ProjectDetails extends Component {
             detailsOfTechnology: "",
             facilitationNeeded: "",
             phase: [],
-            openDialog: false,
-            dialogMessage: '',
+            openDetailsDialog: false,
+            openUpdateDialog: false,
+            detailsDialogMessage: '',
+            updateDialogMessage: '',
             color: null,
             submitButton: 'Submit',
             projectId: Object.values(props.match.params)[0],
@@ -67,11 +69,20 @@ class ProjectDetails extends Component {
         this.handleProjectData();
     }
 
-    handleCloseDialog = (event, reason) => {
+    handleCloseDetailsDialog = (event, reason) => {
+        event.preventDefault();
         if (reason === 'clickaway') {
             return;
         }
-        this.setState({ openDialog: false });
+        this.setState({ openDetailsDialog: false });
+    }
+
+    handleCloseUpdateDialog = (event, reason) => {
+        event.preventDefault();
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.setState({ openUpdateDialog: false });
     }
 
     handleChange(event) {
@@ -134,17 +145,19 @@ class ProjectDetails extends Component {
                         detailsOfTechnology: '',
                         facilitationNeeded: '',
                         phase: [],
-                        openDialog: true,
-                        dialogMessage: 'Project details edited',
-                        color: green[500],
-                        submitButton: 'Submit'
+                        openDetailsDialog: true,
+                        detailsDialogMessage: 'Project details edited',
+                        detailsDialogColor: green[500],
+                        submitButton: 'Submit',
+                        disabled: true
                     })
+                    this.handleProjectData();
                 })
                 .catch(() => {
                     this.setState({
-                        openDialog: true,
-                        dialogMessage: 'Project details failed to update',
-                        color: red[500],
+                        openDetailsDialog: true,
+                        detailsDialogMessage: 'Project details failed to update',
+                        detailsDialogColor: red[500],
                         submitButton: 'Edit'
                     })
                 })
@@ -180,7 +193,7 @@ class ProjectDetails extends Component {
     handleEdit() {
         this.setState({
             disabled: false,
-            submitButton: 'Edit details'
+            submitButton: 'Edit'
         });
     }
 
@@ -201,17 +214,17 @@ class ProjectDetails extends Component {
         axios.delete(`/ProjectUpdate/${projectUpdateId}`)
             .then(() => {
                 this.setState({
-                    openDialog: true,
-                    dialogMessage: 'Project details deleted',
-                    dialogColor: green[500]
+                    openUpdateDialog: true,
+                    updateDialogMessage: 'Project details deleted',
+                    updateDialogColor: green[500]
                 });
                 this.handleProjectData();
             })
             .catch(() => {
                 this.setState({
-                    openDialog: true,
-                    dialogMessage: 'Failed to delete project',
-                    dialogColor: red[500],
+                    openUpdateDialog: true,
+                    updateDialogMessage: 'Failed to delete project',
+                    updateDialogColor: red[500],
                 })
                 this.handleProjectData();
             })
@@ -526,23 +539,23 @@ class ProjectDetails extends Component {
                                             <Done fontSize="small" style={{ color: green[500] }} />
                                         </Button>
                                         <Dialog
-                                            open={this.state.openDialog}
-                                            onBackdropClick={this.handleCloseDialog}
+                                            open={this.state.openDetailsDialog}
+                                            onBackdropClick={this.handleCloseDetailsDialog}
                                             aria-describedby="alert-dialog-description"
                                         >
                                             <DialogContent>
                                                 <center>
-                                                    {this.state.color === green[500] ?
+                                                    {this.state.detailsDialogColor === green[500] ?
                                                         <div className={classes.root}>
-                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: this.state.color, fontSize: 60 }} />
+                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: this.state.detailsDialogColor, fontSize: 60 }} />
                                                         </div>
                                                         :
                                                         <div>
-                                                            <CancelOutlined className="fa" style={{ color: this.state.color, fontSize: 60 }} />
+                                                            <CancelOutlined className="fa" style={{ color: this.state.detailsDialogColor, fontSize: 60 }} />
                                                         </div>
                                                     }
                                                     <DialogContentText id="alert-dialog-description">
-                                                        {this.state.dialogMessage}
+                                                        {this.state.detailsDialogMessage}
                                                     </DialogContentText>
                                                 </center>
                                             </DialogContent>
@@ -603,23 +616,23 @@ class ProjectDetails extends Component {
                                             </tbody>
                                         </Table>
                                         <Dialog
-                                            open={this.state.openDialog}
-                                            onBackdropClick={this.handleCloseDialog}
+                                            open={this.state.openUpdateDialog}
+                                            onBackdropClick={this.handleCloseUpdateDialog}
                                             aria-describedby="alert-dialog-description"
                                         >
                                             <DialogContent>
                                                 <center>
-                                                    {this.state.dialogColor === green[500] ?
+                                                    {this.state.updateDialogColor === green[500] ?
                                                         <div className={classes.root}>
-                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: this.state.dialogColor, fontSize: 60 }} />
+                                                            <CheckCircleOutlineOutlined className="fa" style={{ color: this.state.updateDialogColor, fontSize: 60 }} />
                                                         </div>
                                                         :
                                                         <div>
-                                                            <CancelOutlined className="fa" style={{ color: this.state.dialogColor, fontSize: 60 }} />
+                                                            <CancelOutlined className="fa" style={{ color: this.state.updateDialogColor, fontSize: 60 }} />
                                                         </div>
                                                     }
                                                     <DialogContentText id="alert-dialog-description">
-                                                        {this.state.dialogMessage}
+                                                        {this.state.updateDialogMessage}
                                                     </DialogContentText>
                                                 </center>
                                             </DialogContent>
