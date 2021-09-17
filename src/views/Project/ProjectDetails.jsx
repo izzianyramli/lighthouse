@@ -165,6 +165,14 @@ class ProjectDetails extends Component {
         });
     }
 
+    handleCancel() {
+        this.setState({
+            editDisabled: true,
+        });
+        this.handleProjectData();
+    }
+
+
     deleteProjectUpdate(projectUpdateId) {
         axios.delete(`/ProjectUpdate/${projectUpdateId}`)
             .then(() => {
@@ -483,6 +491,15 @@ class ProjectDetails extends Component {
                                             SUBMIT
                                             &nbsp;
                                             <Done fontSize="small" style={{ color: green[500] }} />
+                                        </Button>
+                                        <Button
+                                            className={classes.button}
+                                            variant="outlined"
+                                            color="default"
+                                            onClick={() => this.handleCancel()}
+                                            disabled={this.state.editDisabled}
+                                        >
+                                            Cancel
                                         </Button>
                                         <Dialog
                                             open={this.state.openDetailsDialog}
