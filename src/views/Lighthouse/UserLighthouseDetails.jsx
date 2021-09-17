@@ -72,9 +72,7 @@ class UserLighthouseDetails extends Component {
             openDialog: false,
             dialogMessage: '',
             dialogColor: null,
-            submitButton: 'Submit',
-            disabled: true,
-            editDisabled: false,
+            editDisabled: true,
             project: [],
         };
         this.handleLighthouseData = this.handleLighthouseData.bind(this);
@@ -144,60 +142,31 @@ class UserLighthouseDetails extends Component {
             customization: customization,
             others: others,
         };
-        if (this.state.submitButton === 'Submit') {
-            axios.post('/Lighthouse', payload)
-                .then(() => {
-                    this.setState({
-                        model: '',
-                        type: '',
-                        productivity: '',
-                        sustainability: '',
-                        agility: '',
-                        speedToMarket: '',
-                        customization: '',
-                        others: '',
-                        openDialog: true,
-                        dialogMessage: 'Lighthouse details added',
-                        dialogColor: green[500],
-                        submitButton: 'Submit'
-                    })
+        axios.patch(`/Lighthouse/${this.state.lighthouseId}`, payload)
+            .then(() => {
+                this.setState({
+                    model: '',
+                    type: '',
+                    productivity: '',
+                    sustainability: '',
+                    agility: '',
+                    speedToMarket: '',
+                    customization: '',
+                    others: '',
+                    openDialog: true,
+                    dialogMessage: 'Lighthouse details edited',
+                    dialogColor: green[500],
+                    editDisabled: true,
                 })
-                .catch(() => {
-                    this.setState({
-                        openDialog: true,
-                        dialogMessage: 'Lighthouse details failed to update',
-                        dialogColor: red[500],
-                        submitButton: 'Submit'
-                    })
+                this.handleLighthouseData();
+            })
+            .catch(() => {
+                this.setState({
+                    openDialog: true,
+                    dialogMessage: 'Lighthouse details failed to update',
+                    dialogColor: red[500],
                 })
-        } else if (this.state.submitButton === 'Edit details') {
-            axios.patch(`/Lighthouse/${this.state.lighthouseId}`, payload)
-                .then(() => {
-                    this.setState({
-                        model: '',
-                        type: '',
-                        productivity: '',
-                        sustainability: '',
-                        agility: '',
-                        speedToMarket: '',
-                        customization: '',
-                        others: '',
-                        openDialog: true,
-                        dialogMessage: 'Lighthouse details edited',
-                        dialogColor: green[500],
-                        submitButton: 'Submit'
-                    })
-                    this.handleLighthouseData();
-                })
-                .catch(() => {
-                    this.setState({
-                        openDialog: true,
-                        dialogMessage: 'Lighthouse details failed to update',
-                        dialogColor: red[500],
-                        submitButton: 'Edit details'
-                    })
-                })
-        }
+            })
     }
 
     handleLighthouseData() {
@@ -227,9 +196,15 @@ class UserLighthouseDetails extends Component {
 
     handleEdit() {
         this.setState({
-            disabled: false,
-            submitButton: 'Edit details'
+            editDisabled: false,
         });
+    }
+
+    handleCancel() {
+        this.setState({
+            editDisabled: true,
+        });
+        this.handleLighthouseData();
     }
 
     deleteProject(projectId) {
@@ -343,7 +318,7 @@ class UserLighthouseDetails extends Component {
                                             variant="outlined"
                                             className={classes.button}
                                             onClick={() => this.handleEdit()}
-                                            disabled={this.state.editDisabled}
+                                            disabled={!this.state.editDisabled}
                                         >
                                             <EditIcon /> &nbsp;
                                             Edit details
@@ -405,7 +380,7 @@ class UserLighthouseDetails extends Component {
                                                 style={{ margin: 8 }}
                                                 fullWidth
                                                 select
-                                                disabled={this.state.disabled}
+                                                disabled={this.state.editDisabled}
                                             >
                                                 {model.map((option) => (
                                                     <MenuItem key={option.value} value={option.value}>
@@ -424,7 +399,7 @@ class UserLighthouseDetails extends Component {
                                                 style={{ margin: 8 }}
                                                 fullWidth
                                                 select
-                                                disabled={this.state.disabled}
+                                                disabled={this.state.editDisabled}
                                             >
                                                 {type.map((option) => (
                                                     <MenuItem key={option.value} value={option.value}>
@@ -442,7 +417,7 @@ class UserLighthouseDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
-                                                disabled={this.state.disabled}
+                                                disabled={this.state.editDisabled}
                                             />
 
                                             <TextField
@@ -454,7 +429,7 @@ class UserLighthouseDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
-                                                disabled={this.state.disabled}
+                                                disabled={this.state.editDisabled}
                                             />
 
                                             <TextField
@@ -466,7 +441,7 @@ class UserLighthouseDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
-                                                disabled={this.state.disabled}
+                                                disabled={this.state.editDisabled}
                                             />
 
                                             <TextField
@@ -478,7 +453,7 @@ class UserLighthouseDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
-                                                disabled={this.state.disabled}
+                                                disabled={this.state.editDisabled}
                                             />
 
                                             <TextField
@@ -490,7 +465,7 @@ class UserLighthouseDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
-                                                disabled={this.state.disabled}
+                                                disabled={this.state.editDisabled}
                                             />
 
                                             <TextField
@@ -502,7 +477,7 @@ class UserLighthouseDetails extends Component {
                                                 variant="outlined"
                                                 style={{ margin: 8 }}
                                                 fullWidth
-                                                disabled={this.state.disabled}
+                                                disabled={this.state.editDisabled}
                                             />
 
                                             &nbsp; <br />
@@ -522,7 +497,7 @@ class UserLighthouseDetails extends Component {
                                                     this.state.customization,
                                                     this.state.others,
                                                 )}
-                                                disabled={this.state.disabled}
+                                                disabled={this.state.editDisabled}
                                             >
                                                 {/* {this.state.submitButton} */}
                                                 Submit
@@ -534,8 +509,8 @@ class UserLighthouseDetails extends Component {
                                                 className={classes.button}
                                                 variant="outlined"
                                                 color="default"
-                                                onClick={() => this.setState({ disabled: true })}
-                                                disabled={this.state.disabled}
+                                                onClick={() => this.handleCancel()}
+                                                disabled={this.state.editDisabled}
                                             >
                                                 Cancel
                                             </Button>
