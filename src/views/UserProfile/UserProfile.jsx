@@ -48,8 +48,7 @@ class UserProfile extends Component {
       email: "",
       firstName: "",
       lastName: "",
-      disabled: true,
-      editProfile: false,
+      editDisabled: true,
       openDialog: false,
       dialogMessage: '',
       dialogColor: null,
@@ -93,7 +92,8 @@ class UserProfile extends Component {
         this.setState({
           openDialog: true,
           dialogMessage: 'Account details updated',
-          dialogColor: green[500]
+          dialogColor: green[500],
+          editDisabled: true,
         })
         this.fetchUserInfo();
       })
@@ -108,7 +108,9 @@ class UserProfile extends Component {
     }
 
   handleCancel() {
-    this.setState({ disabled: true, editProfile: false, })
+    this.setState({
+      editDisabled: true,
+    });
     this.fetchUserInfo();
   }
 
@@ -144,7 +146,7 @@ class UserProfile extends Component {
   }));
 
     let buttons;
-    if (this.state.editProfile) {
+    if (!this.state.editDisabled) {
       buttons = 
       <React.Fragment>
         <Button bsStyle="default" pullRight fill onClick={() => this.handleCancel()}>
@@ -159,7 +161,6 @@ class UserProfile extends Component {
             this.state.firstName,
             this.state.lastName
           )
-          this.setState({ disabled: true, editProfile: false, })
         }}>
           Save Changes 
         </Button>
@@ -167,7 +168,7 @@ class UserProfile extends Component {
     }
     else {
       buttons = 
-      <Button bsStyle="success" pullRight fill onClick={() => this.setState({ disabled: false, editProfile: true, })}>
+      <Button bsStyle="success" pullRight fill onClick={() => this.setState({ editDisabled: false})}>
         Edit Profile
       </Button>;
     }
@@ -201,7 +202,7 @@ class UserProfile extends Component {
                           placeholder: "Enter your email",
                           onChange: (event) => this.handleChange(event),
                           value: this.state.email,
-                          disabled: this.state.disabled
+                          disabled: this.state.editDisabled
                         }
                       ]}
                     />
@@ -216,7 +217,7 @@ class UserProfile extends Component {
                           placeholder: "First name",
                           onChange: (event) => this.handleChange(event),
                           value: this.state.firstName,
-                          disabled: this.state.disabled
+                          disabled: this.state.editDisabled
                         },
                         {
                           label: "Last name",
@@ -226,32 +227,11 @@ class UserProfile extends Component {
                           placeholder: "Last name",
                           onChange: (event) => this.handleChange(event),
                           value: this.state.lastName,
-                          disabled: this.state.disabled
+                          disabled: this.state.editDisabled
                         }
                       ]}
                     />
                     {buttons}
-                    {/* {this.state.editProfile ?
-                      [<Button bsStyle="default" pullRight fill onClick={() => this.setState({ disabled: true, editProfile: false, })}>
-                        Cancel
-                      </Button>,
-                      <Button bsStyle="success" pullRight fill onClick={(event) => {
-                        this.handleSubmit(
-                          event,
-                          this.state.company,
-                          this.state.email,
-                          this.state.firstName,
-                          this.state.lastName
-                        )
-                        this.setState({ disabled: true, editProfile: false, })
-                      }}>
-                        Save Changes 
-                      </Button>]
-                      :
-                      <Button bsStyle="success" pullRight fill onClick={() => this.setState({ disabled: false, editProfile: true, })}>
-                        Edit Profile
-                      </Button>
-                    } */}
                     <div className="clearfix" />
                   </form>
                 }
