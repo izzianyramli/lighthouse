@@ -315,19 +315,6 @@ class ProjectDetails extends Component {
                                             <EditIcon /> &nbsp;
                                             Edit details
                                         </Button>
-                                        &nbsp;
-                                        <Link to={{
-                                            pathname: `/user/add-project-update/${this.state.projectId}`
-                                        }}>
-                                            <Button
-                                                color="primary"
-                                                variant="outlined"
-                                                className={classes.button}
-                                            >
-                                                <AddIcon /> &nbsp;
-                                                Add Project Updates
-                                            </Button>
-                                        </Link>
 
                                         &nbsp; <br />
                                         <form
@@ -537,6 +524,19 @@ class ProjectDetails extends Component {
                                 ctTableResponsive
                                 content={
                                     <div>
+                                        &nbsp;
+                                        <Link to={{
+                                            pathname: `/user/add-project-update/${this.state.projectId}`
+                                        }}>
+                                            <Button
+                                                color="primary"
+                                                variant="outlined"
+                                                className={classes.button}
+                                            >
+                                                <AddIcon /> &nbsp;
+                                                Add Project Updates
+                                            </Button>
+                                        </Link>
                                         <Table striped hover>
                                             <thead>
                                                 <tr>
