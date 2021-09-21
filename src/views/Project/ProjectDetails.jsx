@@ -151,6 +151,7 @@ class ProjectDetails extends Component {
                     totalCost: res_project.data.totalCost,
                     sourceOfTechnology: res_project.data.sourceOfTechnology,
                     detailsOfTechnology: res_project.data.detailsOfTechnology,
+                    phase: res_project.data.phase,
                     facilitationNeeded: res_project.data.facilitationNeeded,
                     projectUpdates: res_project.data.projectUpdate
                 });
