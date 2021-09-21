@@ -19,8 +19,12 @@ class ProjectUpdate extends Component {
             achievements: "",
             problems: "",
             files: null,
-            projectId: Object.values(props.match.params)[0]
+            projectId: Object.values(props.match.params)[0],
         }
+    }
+
+    redirectPage(path) {
+        this.props.history.push(path);
     }
 
     handleChange(event) {
@@ -48,6 +52,7 @@ class ProjectUpdate extends Component {
         axios.post('/ProjectUpdate', payload)
             .then(() => {
                 this.clearForm();
+                this.redirectPage(`/user/project-info/${this.state.projectId}`);
             });
     }
 

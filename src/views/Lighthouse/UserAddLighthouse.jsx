@@ -52,6 +52,10 @@ class UserAddLighthouseDetails extends Component {
         this.fetchUserData(userId);
     }
 
+    redirectPage(path) {
+        this.props.history.push(path);
+    }
+
     fetchUserData(user) {
         axios.get(`/Account/${user}`)
             .then((res) => {
@@ -76,6 +80,7 @@ class UserAddLighthouseDetails extends Component {
             return;
         }
         this.setState({ openDialog: false });
+        this.redirectPage(`/user/lighthouse`);
     }
 
 

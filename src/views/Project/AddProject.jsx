@@ -55,11 +55,16 @@ class ProjectDetails extends Component {
         this.handleLighthouseData();
     }
 
+    redirectPage(path) {
+        this.props.history.push(path);
+    }
+
     handleCloseDialog = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
         this.setState({ openDialog: false });
+        this.redirectPage(`/user/lighthouse-info/${this.state.lighthouseId}`);
     }
 
     handleChange(event) {
