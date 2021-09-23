@@ -36,7 +36,8 @@ class CompanyDetails extends Component {
             industryDivision: "",
             status: "",
             engagementStatus: [],
-            openDialog: false,
+            openDialogSubmit: false,
+            openDialogEdit: false,
             dialogMessage: '',
             dialogColor: null,
             currentData: {},
@@ -55,12 +56,19 @@ class CompanyDetails extends Component {
         this.props.history.push(path);
     }
 
-    handleCloseDialog = (event, reason) => {
+    handleCloseDialogSubmit = (event, reason,) => {
         if (reason === 'clickaway') {
             return;
         }
-        this.setState({ openDialog: false });
+        this.setState({ openDialogSubmit: false });
         this.redirectPage('/admin/company');
+    }
+
+    handleCloseDialogEdit = (event, reason,) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.setState({ openDialogEdit: false });
     }
 
     handleChange(event) {
@@ -116,7 +124,7 @@ class CompanyDetails extends Component {
                         industryDivision: '',
                         status: '',
                         engagementStatus: '',
-                        openDialog: true,
+                        openDialogSubmit: true,
                         dialogMessage: 'Company details added',
                         dialogColor: green[500],
                         submitButton: 'Submit'
@@ -124,7 +132,7 @@ class CompanyDetails extends Component {
                 })
                 .catch(() => {
                     this.setState({
-                        openDialog: true,
+                        openDialogSubmit: true,
                         dialogMessage: 'Company details failed to update',
                         dialogColor: red[500],
                         submitButton: 'Submit'
@@ -134,7 +142,7 @@ class CompanyDetails extends Component {
             axios.patch(`/Company/${this.state.companyId}`, payload)
                 .then(() => {
                     this.setState({
-                        openDialog: true,
+                        openDialogEdit: true,
                         dialogMessage: 'Company details edited',
                         dialogColor: green[500],
                         submitButton: 'Submit'
@@ -143,7 +151,7 @@ class CompanyDetails extends Component {
                 })
                 .catch(() => {
                     this.setState({
-                        openDialog: true,
+                        openDialogEdit: true,
                         dialogMessage: 'Company details failed to update',
                         dialogColor: red[500],
                         submitButton: 'Edit details'
@@ -556,8 +564,8 @@ class CompanyDetails extends Component {
                                             Cancel
                                         </Button>
                                         <Dialog
-                                            open={this.state.openDialog}
-                                            onBackdropClick={this.handleCloseDialog}
+                                            open={this.state.openDialogSubmit || this.state.openDialogEdit}
+                                            onBackdropClick={this.state.openDialogSubmit ? this.handleCloseDialogSubmit : this.handleCloseDialogEdit}
                                             aria-describedby="alert-dialog-description"
                                         >
                                             <DialogContent>
