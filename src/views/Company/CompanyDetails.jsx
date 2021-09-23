@@ -51,11 +51,16 @@ class CompanyDetails extends Component {
         this.handleCompanyData();
     }
 
+    redirectPage(path) {
+        this.props.history.push(path);
+    }
+
     handleCloseDialog = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
         this.setState({ openDialog: false });
+        this.redirectPage('/admin/company');
     }
 
     handleChange(event) {
